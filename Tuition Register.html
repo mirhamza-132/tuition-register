@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuition Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2b23;
+    --paper:#f5f3ec;
+    --paper-raised:#fbfaf5;
+    --rule:#d9d3bf;
+    --rule-strong:#c2bba3;
+    --green:#1e4a3d;
+    --green-dark:#123128;
+    --green-tint:#e4ece7;
+    --gold:#b8862e;
+    --gold-light:#e9d8ae;
+    --red:#a23e33;
+    --red-tint:#f3e3e0;
+    --shadow: 0 1px 2px rgba(28,43,35,0.06), 0 6px 16px rgba(28,43,35,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter','Hind Siliguri',sans-serif;
+    background-image:
+      repeating-linear-gradient(180deg, transparent, transparent 31px, rgba(28,43,35,0.035) 32px);
+  }
+  h1,h2,h3,.display{ font-family:'Fraunces','Hind Siliguri', serif; font-weight:600; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- Header ---------- */
+  header.top{
+    background:var(--green);
+    color:var(--paper-raised);
+    padding:22px 28px 26px;
+    border-bottom:6px double var(--gold-light);
+    position:relative;
+  }
+  .brand{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .brand .mark{
+    width:38px;height:38px;border-radius:50%;
+    border:2px solid var(--gold-light);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:17px;
+    color:var(--gold-light); flex:none;
+  }
+  .brand h1{ margin:0; font-size:25px; font-weight:600; }
+  .brand .sub{
+    font-family:'IBM Plex Mono',monospace; font-size:11px;
+    letter-spacing:0.1em; text-transform:uppercase; opacity:0.75;
+  }
+  .stats{
+    display:flex; gap:0; width:100%; margin-top:18px; flex-wrap:wrap;
+    border-top:1px solid rgba(245,243,236,0.18); padding-top:14px;
+  }
+  .stat{ flex:1 1 0; min-width:140px; padding:0 22px; border-right:1px solid rgba(245,243,236,0.18); }
+  .stat:first-child{ padding-left:0; }
+  .stat:last-child{ border-right:none; }
+  .stat .num{ font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:600; color:var(--gold-light); }
+  .stat .lbl{ font-size:12px; opacity:0.75; margin-top:2px; }
+
+  /* ---------- Layout ---------- */
+  .app{ display:grid; grid-template-columns: 310px 1fr; min-height:calc(100vh - 130px); }
+  @media (max-width: 900px){ .app{ grid-template-columns: 1fr; } }
+
+  aside{ border-right:1px solid var(--rule); padding:18px; background:var(--paper); }
+  @media (max-width:900px){ aside{ border-right:none; border-bottom:1px solid var(--rule); } }
+  .search-row{ display:flex; gap:8px; margin-bottom:12px; }
+  input[type="text"], input[type="number"], input[type="tel"], select, textarea{
+    font-family:'Inter','Hind Siliguri',sans-serif; font-size:14px; padding:9px 10px;
+    border:1px solid var(--rule-strong); border-radius:3px;
+    background:var(--paper-raised); color:var(--ink); width:100%;
+  }
+  input:focus, select:focus, textarea:focus{ outline:2px solid var(--green); outline-offset:1px; }
+  button{ font-family:'Inter','Hind Siliguri',sans-serif; font-weight:600; font-size:14px; cursor:pointer; border:none; border-radius:3px; padding:9px 14px; }
+  button:focus-visible{ outline:2px solid var(--green); outline-offset:2px; }
+  .btn-primary{ background:var(--green); color:var(--paper-raised); }
+  .btn-primary:hover{ background:var(--green-dark); }
+  .btn-ghost{ background:transparent; color:var(--green); border:1px solid var(--rule-strong); }
+  .btn-ghost:hover{ background:var(--green-tint); }
+  .btn-danger{ background:transparent; color:var(--red); border:1px solid var(--rule-strong); }
+  .btn-danger:hover{ background:var(--red-tint); }
+  .btn-sm{ padding:6px 10px; font-size:12.5px; }
+  .btn-add-student{ width:100%; margin-bottom:16px; }
+
+  .student-card{
+    border:1px solid var(--rule); border-radius:4px; padding:11px 12px; margin-bottom:8px;
+    background:var(--paper-raised); cursor:pointer; transition:border-color .15s, box-shadow .15s;
+  }
+  .student-card:hover{ border-color:var(--green); }
+  .student-card.active{ border-color:var(--green); box-shadow:var(--shadow); border-left:4px solid var(--gold); }
+  .student-card.ended{ opacity:0.55; }
+  .student-card .name{ font-weight:600; font-size:15px; display:flex; align-items:center; gap:6px; }
+  .student-card .name .star{ color:var(--gold); font-size:13px; }
+  .student-card .meta{ font-size:12px; color:#5c6b62; margin-top:2px; }
+  .student-card .row{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; flex-wrap:wrap; gap:6px; }
+
+  /* Stamp: flat pill, no rotation, so the label sits centered and symmetric */
+  .stamp{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+    letter-spacing:0.06em; line-height:1; padding:4px 10px; border-radius:20px; border:1.5px solid;
+    white-space:nowrap; text-align:center;
+  }
+  .stamp.due{ color:var(--red); border-color:var(--red); background:var(--red-tint); }
+  .stamp.clear{ color:var(--green); border-color:var(--green); background:var(--green-tint); }
+  .stamp.primary{ color:var(--gold); border-color:var(--gold); background:var(--gold-light); }
+  .stamp.ended{ color:#7a8579; border-color:var(--rule-strong); background:var(--paper); }
+
+  .empty-sidebar{ font-size:13px; color:#7a8579; padding:8px 2px; }
+
+  main{ padding:26px 30px 60px; }
+  @media (max-width:900px){ main{ padding:20px 16px 50px; } }
+
+  .placeholder{ max-width:440px; margin:60px auto; text-align:center; color:#6c766c; }
+  .placeholder h2{ color:var(--ink); font-size:20px; margin-bottom:8px; }
+
+  .student-header{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;
+    border-bottom:1px solid var(--rule); padding-bottom:16px; margin-bottom:14px;
+  }
+  .student-header h2{ margin:0 0 6px; font-size:24px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .student-header .meta-line{ font-size:13.5px; color:#48534b; margin-top:3px; }
+  .student-header .meta-line b{ color:var(--ink); font-weight:600; }
+  .student-header .actions{ display:flex; gap:8px; }
+  .info-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px 20px;
+    margin-top:12px; margin-bottom:6px;
+  }
+  .info-grid .item .k{ font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#7a8579; }
+  .info-grid .item .v{ font-size:14px; margin-top:2px; }
+  .chip{
+    display:inline-block; background:var(--green-tint); color:var(--green-dark); font-size:12px;
+    padding:2px 9px; border-radius:12px; margin:2px 4px 2px 0;
+  }
+
+  .add-session-form{
+    display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;
+    background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:14px; margin-bottom:22px;
+  }
+  .add-session-form .field{ display:flex; flex-direction:column; gap:4px; }
+  .add-session-form label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .add-session-form select, .add-session-form input{ min-width:88px; }
+
+  .cycle-block{ margin-bottom:22px; border:1px solid var(--rule); border-radius:6px; overflow:hidden; background:var(--paper-raised); }
+  .cycle-head{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    padding:12px 16px; background:var(--green-tint); border-bottom:1px solid var(--rule);
+  }
+  .cycle-head .title{ font-weight:600; font-size:15px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .cycle-head .progress{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#3d4a41; }
+  .cycle-head .actions{ display:flex; gap:8px; align-items:center; }
+  .cycle-len-select{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:600; color:var(--green-dark);
+    background:var(--paper-raised); border:1px solid var(--rule-strong); border-radius:12px;
+    padding:3px 8px; cursor:pointer;
+  }
+  .cycle-len-select:hover{ border-color:var(--green); }
+  .badge-due{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--red); color:#fff; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:14px;
+  }
+  .badge-collected{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--green); color:#fff; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:14px;
+  }
+  .badge-progress{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--paper); color:#5c6b62; font-size:11.5px; padding:4px 10px; border-radius:14px; border:1px solid var(--rule-strong);
+  }
+
+  .session-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0; }
+  .session-item{
+    padding:12px 14px; border-bottom:1px solid var(--rule); border-right:1px solid var(--rule);
+    position:relative;
+  }
+  .session-item .d{ font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; }
+  .session-item .w{ font-size:12px; color:#5c6b62; margin-top:2px; }
+  .session-item .del{
+    position:absolute; top:6px; right:6px; background:none; border:none; color:#a3a99a;
+    font-size:13px; padding:2px 5px; cursor:pointer;
+  }
+  .session-item .del:hover{ color:var(--red); }
+
+  .empty-block{ padding:24px; text-align:center; color:#8b9186; font-style:italic; font-size:13.5px; }
+
+  .net-income-section{
+    background:var(--paper-raised); border-bottom:1px solid var(--rule);
+    padding:20px 30px 26px;
+  }
+  @media (max-width:900px){ .net-income-section{ padding:16px 16px 22px; } }
+  .net-income-head h2{ margin:0 0 3px; font-size:19px; }
+  .net-income-head p{ margin:0 0 14px; font-size:12.5px; color:#5c6b62; }
+  .net-income-table{ width:100%; min-width:600px; border-collapse:collapse; font-size:13.5px; table-layout:fixed; }
+  .net-income-table th, .net-income-table td{
+    padding:9px 12px; text-align:right; border-bottom:1px solid var(--rule); white-space:nowrap;
+  }
+  .net-income-table th:first-child, .net-income-table td:first-child{ text-align:left; width:24%; }
+  .net-income-table th:not(:first-child), .net-income-table td:not(:first-child){ width:19%; }
+  .net-income-table thead th{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62;
+    border-bottom:1px solid var(--rule-strong); font-weight:600;
+  }
+  .net-income-table tbody tr:hover{ background:var(--green-tint); }
+  .net-income-table td.name{ font-weight:600; }
+  .net-income-table td.net{ font-weight:700; color:var(--green-dark); font-family:'IBM Plex Mono',monospace; }
+  .net-income-table td.negative{ color:var(--red); }
+  .net-income-table tfoot td{
+    border-bottom:none; border-top:2px solid var(--rule-strong); font-weight:700;
+    font-family:'IBM Plex Mono',monospace; padding-top:12px;
+  }
+  .net-income-table .mono-cell{ font-family:'IBM Plex Mono',monospace; }
+
+  .payments-section{
+    background:var(--paper); border-bottom:1px solid var(--rule);
+    padding:20px 30px 26px;
+  }
+  @media (max-width:900px){ .payments-section{ padding:16px 16px 22px; } }
+  .payments-head h2{ margin:0 0 3px; font-size:19px; }
+  .payments-head p{ margin:0 0 14px; font-size:12.5px; color:#5c6b62; }
+  .add-payment-form{
+    display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;
+    background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:14px; margin-bottom:18px;
+  }
+  .add-payment-form .field{ display:flex; flex-direction:column; gap:4px; }
+  .add-payment-form label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .add-payment-form select, .add-payment-form input{ min-width:100px; }
+  .table-scroll{ width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:18px; }
+  .payments-table{ width:100%; min-width:700px; border-collapse:collapse; font-size:13.5px; table-layout:fixed; margin-bottom:0; }
+  .payments-table th, .payments-table td{
+    padding:9px 10px; text-align:left; border-bottom:1px solid var(--rule);
+    white-space:nowrap; vertical-align:middle;
+  }
+  .payments-table th:nth-child(1), .payments-table td:nth-child(1){ width:15%; }
+  .payments-table th:nth-child(2), .payments-table td:nth-child(2){ width:17%; }
+  .payments-table th:nth-child(3), .payments-table td:nth-child(3){ width:15%; }
+  .payments-table th:nth-child(4), .payments-table td:nth-child(4){ width:13%; text-align:right; }
+  .payments-table th:nth-child(5), .payments-table td:nth-child(5){ width:31%; white-space:normal; word-break:break-word; }
+  .payments-table th:nth-child(6), .payments-table td:nth-child(6){ width:9%; text-align:center; }
+  .payments-table thead th{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62;
+    border-bottom:1px solid var(--rule-strong); font-weight:600;
+  }
+  .payments-table tbody tr:hover{ background:var(--green-tint); }
+  .payments-table td.amt{ font-weight:700; font-family:'IBM Plex Mono',monospace; color:var(--green-dark); }
+  .payments-table tfoot td{
+    border-bottom:none; border-top:2px solid var(--rule-strong); font-weight:700;
+    font-family:'IBM Plex Mono',monospace; padding-top:12px; white-space:nowrap;
+  }
+  .payments-table .del{ background:none; border:none; color:#a3a99a; font-size:13px; cursor:pointer; padding:2px 5px; }
+  .payments-table .del:hover{ color:var(--red); }
+  .payments-summary{
+    display:flex; gap:0; flex-wrap:wrap; border:1px solid var(--rule); border-radius:6px; overflow:hidden;
+  }
+  .payments-summary .cell{
+    flex:1 1 0; min-width:150px; padding:10px 16px; border-right:1px solid var(--rule); background:var(--paper-raised);
+  }
+  .payments-summary .cell:last-child{ border-right:none; }
+  .payments-summary .cell .k{ font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#7a8579; }
+  .payments-summary .cell .v{ font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:600; margin-top:2px; color:var(--green-dark); }
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(18,49,40,0.45);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;
+  }
+  .hidden{ display:none !important; }
+  .modal{
+    background:var(--paper-raised); border-radius:6px; padding:24px; width:100%; max-width:480px;
+    box-shadow:0 12px 40px rgba(18,49,40,0.3); border-top:5px solid var(--gold);
+    max-height:88vh; overflow-y:auto;
+  }
+  .modal h3{ margin-top:0; margin-bottom:16px; font-size:19px; }
+  .modal .field{ margin-bottom:14px; display:flex; flex-direction:column; gap:5px; }
+  .modal .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .modal label{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .modal .hint-text{ font-size:11.5px; color:#8b9186; margin-top:-2px; }
+  .modal .modal-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:18px; }
+
+  .footer-bar{ display:flex; justify-content:center; gap:10px; padding:16px; border-top:1px solid var(--rule); }
+
+  /* ---------- Page nav ---------- */
+  .page-nav{
+    display:flex; gap:0; background:var(--green-dark); padding:0 28px;
+    border-bottom:1px solid rgba(245,243,236,0.15);
+  }
+  @media (max-width:900px){ .page-nav{ padding:0 16px; } }
+  .page-tab{
+    background:none; border:none; border-bottom:3px solid transparent;
+    color:rgba(245,243,236,0.65); font-family:'Inter','Hind Siliguri',sans-serif;
+    font-weight:600; font-size:13.5px; padding:14px 18px; cursor:pointer;
+    letter-spacing:0.01em; border-radius:0;
+  }
+  .page-tab:hover{ color:var(--paper-raised); }
+  .page-tab.active{ color:var(--gold-light); border-bottom-color:var(--gold-light); }
+  .page{ display:block; }
+  .page.hidden{ display:none !important; }
+
+  /* ---------- Lock screen ---------- */
+  .lock-controls{ display:flex; gap:8px; align-items:center; position:absolute; top:22px; right:28px; }
+  @media (max-width:900px){ .lock-controls{ position:static; margin-top:12px; width:100%; } }
+  .lock-controls .btn-ghost{ background:transparent; color:var(--gold-light); border:1px solid rgba(245,243,236,0.4); }
+  .lock-controls .btn-ghost:hover{ background:rgba(245,243,236,0.12); }
+  .lock-screen{
+    position:fixed; inset:0; z-index:9999; background:var(--paper);
+    display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;
+  }
+  .lock-screen.hidden{ display:none; }
+  #appRoot.app-hidden{ display:none; }
+  .lock-card{
+    width:100%; max-width:380px; background:var(--paper-raised); border:1px solid var(--rule);
+    border-radius:10px; padding:26px 24px; box-shadow:0 10px 30px rgba(20,30,25,0.12); margin:auto;
+  }
+  .lock-brand{ display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .lock-brand .mark{
+    width:38px; height:38px; border-radius:8px; background:var(--green-dark); color:var(--gold-light);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px;
+  }
+  .lock-brand h1{ margin:0; font-size:17px; }
+  .lock-brand .sub{ font-size:11.5px; color:#8b9186; text-transform:uppercase; letter-spacing:0.06em; }
+  .lock-panel.hidden{ display:none; }
+  .lock-panel h2{ margin:0 0 6px; font-size:18px; }
+  .lock-panel p{ margin:0 0 16px; font-size:12.5px; color:#5c6b62; line-height:1.5; }
+  .lock-panel .field{ margin-bottom:12px; display:flex; flex-direction:column; gap:5px; }
+  .lock-panel label{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .lock-panel input{ font-size:16px; letter-spacing:0.08em; }
+  .lock-question{ background:var(--green-tint); border-radius:6px; padding:10px 12px; font-size:13px; color:var(--green-dark); font-weight:600; }
+  .lock-error{ color:var(--red); font-size:12.5px; min-height:16px; margin:2px 0 10px; }
+  .lock-link{
+    display:block; width:100%; text-align:center; background:none; border:none; color:#5c6b62;
+    font-size:12.5px; text-decoration:underline; cursor:pointer; margin-top:12px; padding:4px;
+  }
+  .lock-link:hover{ color:var(--green-dark); }
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--green-dark); color:var(--paper-raised); padding:11px 20px; border-radius:4px;
+    font-size:13.5px; box-shadow:var(--shadow); z-index:100; opacity:0; pointer-events:none;
+    transition:opacity .25s, transform .25s; max-width:90vw; text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+
+<div id="lockScreen" class="lock-screen">
+  <div class="lock-card">
+    <div class="lock-brand">
+      <div class="mark">T</div>
+      <div>
+        <h1>Tuition Register</h1>
+        <div class="sub">Locked</div>
+      </div>
+    </div>
+
+    <div id="lockSetup" class="lock-panel hidden">
+      <h2>Set a PIN</h2>
+      <p>This protects your student and income pages. Choose a 4–6 digit PIN.</p>
+      <div class="field"><label>New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpNew1" placeholder="••••"></div>
+      <div class="field"><label>Confirm PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpNew2" placeholder="••••"></div>
+      <div class="field"><label>Security question (for reset)</label><input type="text" id="lpQuestion" placeholder="e.g. My first school's name?"></div>
+      <div class="field"><label>Answer</label><input type="text" id="lpAnswer" placeholder="Your answer"></div>
+      <div class="lock-error" id="lockSetupError"></div>
+      <button class="btn-primary" id="btnLockSetupSave" style="width:100%;">Save PIN</button>
+    </div>
+
+    <div id="lockConfirmNew" class="lock-panel hidden">
+      <h2>Confirm your PIN</h2>
+      <p>Your PIN is saved. Enter it once more to open the website.</p>
+      <div class="field"><label>PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpConfirm" placeholder="••••"></div>
+      <div class="lock-error" id="lockConfirmError"></div>
+      <button class="btn-primary" id="btnLockConfirm" style="width:100%;">Enter</button>
+    </div>
+
+    <div id="lockLogin" class="lock-panel hidden">
+      <h2>Enter your PIN</h2>
+      <p>Enter your PIN to unlock the Student Register and Money pages.</p>
+      <div class="field"><label>PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpLogin" placeholder="••••"></div>
+      <div class="lock-error" id="lockLoginError"></div>
+      <button class="btn-primary" id="btnLockLogin" style="width:100%;">Unlock</button>
+      <button class="lock-link" id="btnForgotPin">Forgot PIN?</button>
+    </div>
+
+    <div id="lockForgotVerify" class="lock-panel hidden">
+      <h2>Reset PIN</h2>
+      <p id="lockQuestionDisplay" class="lock-question"></p>
+      <div class="field"><label>Answer</label><input type="text" id="lpForgotAnswer" placeholder="Your answer"></div>
+      <div class="lock-error" id="lockForgotError"></div>
+      <button class="btn-primary" id="btnForgotVerify" style="width:100%;">Verify Answer</button>
+      <button class="lock-link" id="btnForgotCancel">Back to PIN entry</button>
+    </div>
+
+    <div id="lockForgotSetNew" class="lock-panel hidden">
+      <h2>Set a new PIN</h2>
+      <p>Answer verified. Choose a new PIN and a new security question.</p>
+      <div class="field"><label>New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpReset1" placeholder="••••"></div>
+      <div class="field"><label>Confirm New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpReset2" placeholder="••••"></div>
+      <div class="field"><label>Security question (for reset)</label><input type="text" id="lpResetQuestion" placeholder="e.g. My first school's name?"></div>
+      <div class="field"><label>Answer</label><input type="text" id="lpResetAnswer" placeholder="Your answer"></div>
+      <div class="lock-error" id="lockResetError"></div>
+      <button class="btn-primary" id="btnLockResetSave" style="width:100%;">Save New PIN</button>
+    </div>
+
+    <div id="lockChangeVerify" class="lock-panel hidden">
+      <h2>Change PIN</h2>
+      <p>Enter your current PIN to continue.</p>
+      <div class="field"><label>Current PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpChangeCurrent" placeholder="••••"></div>
+      <div class="lock-error" id="lockChangeVerifyError"></div>
+      <button class="btn-primary" id="btnChangeVerify" style="width:100%;">Continue</button>
+      <button class="lock-link" id="btnChangeCancel">Cancel</button>
+    </div>
+
+    <div id="lockChangeNew" class="lock-panel hidden">
+      <h2>Choose a new PIN</h2>
+      <div class="field"><label>New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpChangeNew1" placeholder="••••"></div>
+      <div class="field"><label>Confirm New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpChangeNew2" placeholder="••••"></div>
+      <div class="lock-error" id="lockChangeNewError"></div>
+      <button class="btn-primary" id="btnChangeSave" style="width:100%;">Save PIN</button>
+    </div>
+  </div>
+</div>
+
+<div id="appRoot">
+
+<header class="top">
+  <div class="brand">
+    <div class="mark">T</div>
+    <div>
+      <h1>Tuition Register</h1>
+      <div class="sub">Student &amp; Cycle Ledger</div>
+    </div>
+  </div>
+  <div class="stats" id="statsRow"></div>
+  <div class="lock-controls">
+    <button class="btn-ghost btn-sm" id="btnChangePin">Change PIN</button>
+    <button class="btn-ghost btn-sm" id="btnLockNow">🔒 Lock</button>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <button class="page-tab active" id="tabPrimary" data-page="primary">Student Register</button>
+  <button class="page-tab" id="tabSecondary" data-page="secondary">Money &amp; Net Income</button>
+</nav>
+
+<div class="page" id="pagePrimary">
+<div class="app">
+  <aside>
+    <button class="btn-primary btn-add-student" id="btnAddStudent">+ Add New Student</button>
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder="Search by name, class, or subject…">
+    </div>
+    <div id="studentList"></div>
+  </aside>
+
+  <main id="mainPanel">
+    <div class="placeholder">
+      <h2>No student selected</h2>
+      <p>Choose a student from the list on the left, or add a new student to start tracking.</p>
+    </div>
+  </main>
+</div>
+</div>
+
+<div class="page hidden" id="pageSecondary">
+<section class="net-income-section" id="netIncomeSection">
+  <div class="net-income-head">
+    <h2>Net Monthly Income</h2>
+    <p>All money-calculation happens here, separate from each student's own details. Fee minus transport cost and other running costs, per 12–13 day cycle.</p>
+  </div>
+  <div id="netIncomeBody"></div>
+</section>
+
+<section class="payments-section" id="paymentsSection">
+  <div class="payments-head">
+    <h2>Payments Received</h2>
+    <p>A separate log of actual money received — which student paid, which month it covers, and the date it came in.</p>
+  </div>
+  <div class="add-payment-form" id="addPaymentForm">
+    <div class="field"><label>Student</label>
+      <select id="pStudent"></select>
+    </div>
+    <div class="field"><label>Amount (Taka)</label>
+      <input type="number" id="pAmount" min="0" step="1" placeholder="e.g. 5000">
+    </div>
+    <div class="field"><label>For month</label>
+      <select id="pForMonth">
+        <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+        <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+        <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+      </select>
+    </div>
+    <div class="field"><label>For year</label>
+      <input type="number" id="pForYear" style="min-width:90px;">
+    </div>
+    <div class="field"><label>Received on — day</label>
+      <select id="pDay"></select>
+    </div>
+    <div class="field"><label>Received on — month</label>
+      <select id="pRecMonth">
+        <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+        <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+        <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+      </select>
+    </div>
+    <div class="field"><label>Received on — year</label>
+      <input type="number" id="pRecYear" style="min-width:90px;">
+    </div>
+    <div class="field" style="flex:1 1 180px;"><label>Note (optional)</label>
+      <input type="text" id="pNote" placeholder="e.g. Paid via bKash">
+    </div>
+    <button class="btn-primary btn-sm" id="btnAddPayment">+ Add Payment</button>
+  </div>
+  <div id="paymentsBody"></div>
+</section>
+</div>
+
+<div class="footer-bar">
+  <button class="btn-ghost btn-sm" id="btnExport">Export Backup (.json)</button>
+  <button class="btn-ghost btn-sm" id="btnImport">Import Backup</button>
+  <input type="file" id="fileImport" accept="application/json" class="hidden">
+</div>
+
+<!-- Add / Edit student modal -->
+<div class="overlay hidden" id="studentModalOverlay">
+  <div class="modal">
+    <h3 id="studentModalTitle">Add New Student</h3>
+
+    <div class="field"><label>Student's Name</label><input type="text" id="fName" placeholder="Full name"></div>
+
+    <div class="two-col">
+      <div class="field"><label>Class</label><input type="text" id="fClass" placeholder="e.g. Grade 9"></div>
+      <div class="field"><label>Location</label><input type="text" id="fLocation" placeholder="Area / address"></div>
+    </div>
+
+    <div class="field">
+      <label>Subjects (separate with commas if more than one)</label>
+      <input type="text" id="fSubjects" placeholder="e.g. Physics, Chemistry, Higher Math">
+    </div>
+
+    <div class="two-col">
+      <div class="field"><label>Days per week</label><input type="number" id="fDaysPerWeek" min="1" max="7" placeholder="e.g. 3"></div>
+      <div class="field"><label>Hours per session</label><input type="number" id="fHours" min="0" step="0.5" placeholder="e.g. 1.5"></div>
+    </div>
+
+    <div class="field">
+      <label>Fixed Fee (Taka)</label>
+      <input type="number" id="fFee" min="0" step="1" placeholder="e.g. 5000">
+    </div>
+
+    <div class="two-col">
+      <div class="field"><label>Transport Cost (per cycle)</label><input type="number" id="fTransportCost" min="0" step="1" placeholder="e.g. 600"></div>
+      <div class="field"><label>Other Costs (per cycle)</label><input type="number" id="fOtherCosts" min="0" step="1" placeholder="e.g. 200"></div>
+    </div>
+    <div class="field"><div class="hint-text">Total cost for the whole 12–13 day cycle, not per day. Net income is calculated automatically.</div></div>
+
+    <div class="field">
+      <label>Default cycle length (new cycles)</label>
+      <select id="fCycleLength">
+        <option value="10">10 days</option>
+        <option value="11">11 days</option>
+        <option value="12">12 days</option>
+        <option value="13">13 days</option>
+        <option value="14">14 days</option>
+        <option value="15">15 days</option>
+        <option value="16">16 days</option>
+      </select>
+      <div class="hint-text">Used for new cycles going forward. Each individual cycle's length can also be changed on its own — from a dropdown right on that cycle's card — so one month can be 12 days, the next 13, the next 14, and so on.</div>
+    </div>
+
+    <div class="two-col">
+      <div class="field"><label>Guardian's Phone Number</label><input type="tel" id="fGuardianPhone" placeholder="Mobile number"></div>
+      <div class="field"><label>Guardian's Name</label><input type="text" id="fGuardianName" placeholder="Guardian's name"></div>
+    </div>
+
+    <div class="field">
+      <label>Guardian's Detailed Address</label>
+      <textarea id="fGuardianDetails" rows="2" placeholder="Address or other details"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-ghost btn-sm" id="btnCancelStudent">Cancel</button>
+      <button class="btn-primary btn-sm" id="btnSaveStudent">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div><!-- /#appRoot -->
+
+<script>
+(function(){
+  const STORAGE_KEY = 'tuitionRegisterData';
+  const LOCK_KEY = 'tuitionRegisterLock_v1';
+
+  function hashPin(str){
+    let h = 5381;
+    for(let i=0;i<str.length;i++){ h = ((h*33) ^ str.charCodeAt(i)) >>> 0; }
+    return h.toString(16);
+  }
+  function loadLock(){
+    try{ const raw = localStorage.getItem(LOCK_KEY); return raw ? JSON.parse(raw) : null; }
+    catch(e){ return null; }
+  }
+  function saveLockData(obj){ localStorage.setItem(LOCK_KEY, JSON.stringify(obj)); }
+  function showLockPanel(id){
+    document.querySelectorAll('.lock-panel').forEach(p=>p.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+  function setLockError(id, msg){ document.getElementById(id).textContent = msg||''; }
+  function unlockApp(){
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('appRoot').classList.remove('app-hidden');
+  }
+  function lockApp(){
+    document.getElementById('appRoot').classList.add('app-hidden');
+    document.getElementById('lockScreen').classList.remove('hidden');
+    document.getElementById('lpLogin').value = '';
+    setLockError('lockLoginError','');
+    showLockPanel('lockLogin');
+  }
+  function initLock(){
+    document.getElementById('appRoot').classList.add('app-hidden');
+    document.getElementById('lockScreen').classList.remove('hidden');
+    const lock = loadLock();
+    showLockPanel(lock ? 'lockLogin' : 'lockSetup');
+  }
+  let data = load();
+  // On open, jump straight to the primary tuition if one is set (and still
+  // exists); otherwise fall back to the first active tuition, then anything.
+  let activeStudentId = (
+    data.students.find(s=>s.id===data.primaryStudentId) ||
+    data.students.find(s=>s.tuitionActive!==false) ||
+    data.students[0] ||
+    {}
+  ).id || null;
+  let editingStudentId = null;
+
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        const parsed = JSON.parse(raw);
+        parsed.payments = parsed.payments || [];
+        parsed.primaryStudentId = parsed.primaryStudentId || null;
+        parsed.students.forEach(s=>{ if(s.tuitionActive==null) s.tuitionActive = true; });
+        return parsed;
+      }
+    }catch(e){ console.error('Could not read saved data', e); }
+    return { students: [], payments: [], primaryStudentId: null };
+  }
+  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function money(n){ n = Number(n)||0; return n.toLocaleString('en-US'); }
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._h);
+    toast._h = setTimeout(()=>t.classList.remove('show'), 2600);
+  }
+  function escapeHtml(str){
+    return String(str||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ---- date helpers: always day-month-year, both for input and display ----
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function fmtDate(y,m,d){ return `${pad2(d)}-${pad2(m)}-${y}`; }
+  function weekdayName(y,m,d){
+    const dt = new Date(y, m-1, d);
+    return dt.toLocaleDateString('en-US', {weekday:'long'});
+  }
+  function ts(y,m,d){ return new Date(y,m-1,d).getTime(); }
+  function isLeapYear(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+  function daysInMonth(y,m){
+    const lengths = [31, isLeapYear(y)?29:28, 31,30,31,30,31,31,30,31,30,31];
+    return lengths[m-1];
+  }
+  function todayParts(){
+    const dt = new Date();
+    return { d: dt.getDate(), m: dt.getMonth()+1, y: dt.getFullYear() };
+  }
+
+  // Keeps the Day dropdown's option range in sync with the selected Month/Year,
+  // so it is impossible to select an invalid date like 30 February.
+  function refreshDayOptions(preserveDay, ids){
+    ids = ids || {day:'sDay', month:'sMonth', year:'sYear'};
+    const daySel = document.getElementById(ids.day);
+    const monthSel = document.getElementById(ids.month);
+    const yearInput = document.getElementById(ids.year);
+    if(!daySel || !monthSel || !yearInput) return;
+    const m = Number(monthSel.value)||1;
+    const y = Number(yearInput.value)||todayParts().y;
+    const max = daysInMonth(y,m);
+    const wanted = preserveDay!=null ? preserveDay : Number(daySel.value)||1;
+    const clamped = Math.min(wanted, max);
+    daySel.innerHTML = Array.from({length:max},(_,i)=>i+1).map(d=>`<option value="${d}">${d}</option>`).join('');
+    daySel.value = clamped;
+  }
+
+  // ---- cycle logic ----
+  function sortedSessions(student){
+    return [...student.sessions].sort((a,b)=>ts(a.y,a.m,a.d)-ts(b.y,b.m,b.d));
+  }
+  const CYCLE_LENGTH_OPTIONS = Array.from({length:11},(_,i)=>i+10); // 10–20 days
+
+  // Each cycle's length can be set individually (e.g. Cycle 1 = 12 days,
+  // Cycle 2 = 13 days, Cycle 3 = 14 days...). student.cycleLengths[i] holds an
+  // explicit override for cycle i+1; cycles without one fall back to the
+  // student's default cycleLength.
+  function cycleLenFor(student, cycleIndex){
+    const lens = student.cycleLengths || [];
+    return lens[cycleIndex] || student.cycleLength || 12;
+  }
+  function buildCycles(student){
+    const sess = sortedSessions(student);
+    const cycles = [];
+    let idx = 0, cycleIndex = 0;
+    while(idx < sess.length){
+      const len = cycleLenFor(student, cycleIndex);
+      const chunk = sess.slice(idx, idx+len);
+      const number = cycleIndex+1;
+      cycles.push({
+        number,
+        sessions: chunk,
+        complete: chunk.length===len,
+        length: len,
+        collected: (student.collectedCycles||[]).includes(number)
+      });
+      idx += len;
+      cycleIndex++;
+    }
+    return cycles;
+  }
+  // Freezes each existing cycle's current length as an explicit override, so
+  // changing the student's default going forward only affects new cycles.
+  function lockInExistingCycleLengths(student){
+    const cycles = buildCycles(student);
+    student.cycleLengths = student.cycleLengths || [];
+    cycles.forEach((c,i)=>{
+      if(student.cycleLengths[i]==null) student.cycleLengths[i] = c.length;
+    });
+  }
+  // Changes one specific cycle's length. If later cycles already have fee
+  // marked as collected, warn first — since shifting this cycle's boundary
+  // reshuffles which days fall into every cycle after it.
+  function setCycleLength(student, cycleNumber, newLen){
+    const affectsCollected = (student.collectedCycles||[]).some(n=>n>=cycleNumber);
+    if(affectsCollected){
+      const ok = confirm(`Changing Cycle ${cycleNumber}'s length will shift the days in that cycle and every cycle after it, so "Fee Collected" marks for Cycle ${cycleNumber} onward will be cleared. Continue?`);
+      if(!ok) return;
+      student.collectedCycles = (student.collectedCycles||[]).filter(n=>n<cycleNumber);
+    }
+    student.cycleLengths = student.cycleLengths || [];
+    student.cycleLengths[cycleNumber-1] = newLen;
+    save();
+    renderAll();
+    toast(`Cycle ${cycleNumber} set to ${newLen} days.`);
+  }
+  function studentStatus(student){
+    const cycles = buildCycles(student);
+    const anyDue = cycles.some(c=>c.complete && !c.collected);
+    return anyDue ? 'due' : 'clear';
+  }
+
+  // Net income = guardian's fee for the cycle, minus transport cost for those
+  // 12-13 teaching days, minus any other running costs for that tuition.
+  function netIncome(student){
+    const fee = Number(student.fee||0);
+    const transport = Number(student.transportCost||0);
+    const other = Number(student.otherCosts||0);
+    return fee - transport - other;
+  }
+
+  function renderStats(){
+    const el = document.getElementById('statsRow');
+    const totalStudents = data.students.length;
+    let received = 0;
+    data.students.forEach(s=>{
+      const cyclesCollected = (s.collectedCycles||[]).length;
+      received += cyclesCollected * Number(s.fee||0);
+    });
+    el.innerHTML = `
+      <div class="stat"><div class="num">${totalStudents}</div><div class="lbl">Total Tuitions</div></div>
+      <div class="stat"><div class="num">${'\u09F3'}${money(received)}</div><div class="lbl">Total Income Received</div></div>
+    `;
+  }
+
+  function renderNetIncome(){
+    const el = document.getElementById('netIncomeBody');
+    if(data.students.length===0){
+      el.innerHTML = `<div class="empty-block">Add a student to see net income calculated automatically here.</div>`;
+      return;
+    }
+    const rows = data.students.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(s=>{
+      const fee = Number(s.fee||0);
+      const transport = Number(s.transportCost||0);
+      const other = Number(s.otherCosts||0);
+      const net = netIncome(s);
+      return `
+        <tr>
+          <td class="name">${escapeHtml(s.name)}</td>
+          <td class="mono-cell">${'\u09F3'}${money(fee)}</td>
+          <td class="mono-cell">${'\u09F3'}${money(transport)}</td>
+          <td class="mono-cell">${'\u09F3'}${money(other)}</td>
+          <td class="net${net<0?' negative':''}">${'\u09F3'}${money(net)}</td>
+        </tr>`;
+    }).join('');
+
+    const totalFee = data.students.reduce((sum,s)=>sum+Number(s.fee||0),0);
+    const totalTransport = data.students.reduce((sum,s)=>sum+Number(s.transportCost||0),0);
+    const totalOther = data.students.reduce((sum,s)=>sum+Number(s.otherCosts||0),0);
+    const totalNet = data.students.reduce((sum,s)=>sum+netIncome(s),0);
+
+    el.innerHTML = `
+      <div class="table-scroll">
+      <table class="net-income-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Fee (per cycle)</th>
+            <th>Transport cost</th>
+            <th>Other costs</th>
+            <th>Net income</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr>
+            <td>Total (per cycle)</td>
+            <td>${'\u09F3'}${money(totalFee)}</td>
+            <td>${'\u09F3'}${money(totalTransport)}</td>
+            <td>${'\u09F3'}${money(totalOther)}</td>
+            <td class="net${totalNet<0?' negative':''}">${'\u09F3'}${money(totalNet)}</td>
+          </tr>
+        </tfoot>
+      </table>
+      </div>
+    `;
+  }
+
+  function renderPayments(){
+    // student dropdown
+    const studentSel = document.getElementById('pStudent');
+    const sortedStudents = data.students.slice().sort((a,b)=>a.name.localeCompare(b.name));
+    studentSel.innerHTML = sortedStudents.length===0
+      ? `<option value="">Add a student first</option>`
+      : sortedStudents.map(s=>`<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+
+    // date defaults
+    const t = todayParts();
+    document.getElementById('pForMonth').value = t.m;
+    document.getElementById('pForYear').value = t.y;
+    document.getElementById('pRecMonth').value = t.m;
+    document.getElementById('pRecYear').value = t.y;
+    refreshDayOptions(t.d, {day:'pDay', month:'pRecMonth', year:'pRecYear'});
+
+    // table + summary
+    const el = document.getElementById('paymentsBody');
+    const payments = (data.payments||[]).slice().sort((a,b)=>ts(b.y,b.m,b.d)-ts(a.y,a.m,a.d));
+    const studentName = (id)=>{ const s = data.students.find(s=>s.id===id); return s ? s.name : '(removed student)'; };
+
+    if(payments.length===0){
+      el.innerHTML = `<div class="empty-block">No payments logged yet. Add the first one above.</div>`;
+    }else{
+      const rows = payments.map(p=>`
+        <tr>
+          <td>${fmtDate(p.y,p.m,p.d)}</td>
+          <td>${escapeHtml(studentName(p.studentId))}</td>
+          <td>${MONTHS[(p.forMonth||1)-1]} ${p.forYear||''}</td>
+          <td class="amt">${'\u09F3'}${money(p.amount)}</td>
+          <td>${escapeHtml(p.note||'—')}</td>
+          <td><button class="del" data-del-payment="${p.id}" title="Delete">✕</button></td>
+        </tr>`).join('');
+      const total = payments.reduce((sum,p)=>sum+Number(p.amount||0),0);
+      el.innerHTML = `
+        <div class="table-scroll">
+        <table class="payments-table">
+          <thead>
+            <tr><th>Received on</th><th>Student</th><th>For month</th><th>Amount</th><th>Note</th><th></th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+          <tfoot>
+            <tr><td colspan="3">Total received</td><td class="amt">${'\u09F3'}${money(total)}</td><td colspan="2"></td></tr>
+          </tfoot>
+        </table>
+        </div>
+      `;
+      el.querySelectorAll('[data-del-payment]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          data.payments = data.payments.filter(p=>p.id!==btn.dataset.delPayment);
+          save(); renderPayments();
+          toast('Payment entry removed.');
+        });
+      });
+    }
+  }
+
+  function addPayment(){
+    const studentId = document.getElementById('pStudent').value;
+    if(!studentId){ toast('Add a student first.'); return; }
+    const amount = Number(document.getElementById('pAmount').value)||0;
+    if(amount<=0){ toast('Enter a valid amount received.'); return; }
+    const forMonth = Number(document.getElementById('pForMonth').value);
+    const forYear = Number(document.getElementById('pForYear').value);
+    const d = Number(document.getElementById('pDay').value);
+    const m = Number(document.getElementById('pRecMonth').value);
+    const y = Number(document.getElementById('pRecYear').value);
+    if(!forYear || forYear<2000 || forYear>2100){ toast('Please enter a valid "for year".'); return; }
+    if(!y || y<2000 || y>2100){ toast('Please enter a valid year received.'); return; }
+    if(d<1 || d>daysInMonth(y,m)){ toast(`${MONTHS[m-1]} ${y} does not have a day ${d}.`); return; }
+    const note = document.getElementById('pNote').value.trim();
+    data.payments = data.payments || [];
+    data.payments.push({ id:uid(), studentId, amount, forMonth, forYear, d, m, y, note });
+    save();
+    toast('Payment recorded.');
+    document.getElementById('pAmount').value = '';
+    document.getElementById('pNote').value = '';
+    renderPayments();
+  }
+
+  function renderStudentList(){
+    const listEl = document.getElementById('studentList');
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const students = data.students
+      .filter(s => !q || s.name.toLowerCase().includes(q) || (s.studentClass||'').toLowerCase().includes(q) || (s.subjects||[]).join(' ').toLowerCase().includes(q))
+      .sort((a,b)=>{
+        // Primary tuition first, then active tuitions, then ended ones — each group alphabetical.
+        const rank = s => s.id===data.primaryStudentId ? 0 : (s.tuitionActive!==false ? 1 : 2);
+        const r = rank(a)-rank(b);
+        return r!==0 ? r : a.name.localeCompare(b.name);
+      });
+
+    if(students.length===0){
+      listEl.innerHTML = `<div class="empty-sidebar">${data.students.length===0 ? 'No students added yet.' : 'No matches found.'}</div>`;
+      return;
+    }
+    listEl.innerHTML = students.map(s=>{
+      const status = studentStatus(s);
+      const isPrimary = s.id===data.primaryStudentId;
+      const isEnded = s.tuitionActive===false;
+      return `
+      <div class="student-card ${s.id===activeStudentId?'active':''} ${isEnded?'ended':''}" data-id="${s.id}">
+        <div class="name">${isPrimary?'<span class="star">★</span>':''}${escapeHtml(s.name)}</div>
+        <div class="meta">${escapeHtml(s.studentClass||'—')} · ${(s.subjects||[]).slice(0,2).join(', ')||'—'}</div>
+        <div class="row">
+          ${isEnded
+            ? `<span class="stamp ended">Ended</span>`
+            : `<span class="stamp ${status}">${status==='due'?'Fee Due':'Up to Date'}</span>`
+          }
+          ${isPrimary ? `<span class="stamp primary">★ Primary</span>` : ''}
+          <span class="mono" style="font-size:11px;color:#5c6b62;">${'\u09F3'}${money(s.fee)}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    listEl.querySelectorAll('.student-card').forEach(card=>{
+      card.addEventListener('click', ()=>{ activeStudentId = card.dataset.id; renderAll(); });
+    });
+  }
+
+  function renderMain(){
+    const main = document.getElementById('mainPanel');
+    const student = data.students.find(s=>s.id===activeStudentId);
+    if(!student){
+      main.innerHTML = `<div class="placeholder"><h2>No student selected</h2><p>Choose a student from the list on the left, or add a new student to start tracking.</p></div>`;
+      return;
+    }
+    const status = studentStatus(student);
+    const cycles = buildCycles(student).slice().reverse(); // latest cycle on top; sessions within a cycle stay ascending
+
+    main.innerHTML = `
+      <div class="student-header">
+        <div style="flex:1;min-width:260px;">
+          <h2>${escapeHtml(student.name)}
+            ${student.tuitionActive===false ? `<span class="stamp ended">Ended</span>` : `<span class="stamp ${status}">${status==='due'?'Fee Due':'Up to Date'}</span>`}
+            ${student.id===data.primaryStudentId ? `<span class="stamp primary">★ Primary</span>` : ''}
+          </h2>
+          <div class="meta-line"><b>Class:</b> ${escapeHtml(student.studentClass||'—')} &nbsp;·&nbsp; <b>Location:</b> ${escapeHtml(student.location||'—')}</div>
+          <div style="margin-top:6px;">${(student.subjects||[]).map(sub=>`<span class="chip">${escapeHtml(sub)}</span>`).join('')||'<span class="hint-text">No subjects added</span>'}</div>
+          <div class="info-grid">
+            <div class="item"><div class="k">Fee</div><div class="v">${'\u09F3'}${money(student.fee)}</div></div>
+            <div class="item"><div class="k">Per week</div><div class="v">${student.daysPerWeek||'—'} days</div></div>
+            <div class="item"><div class="k">Per session</div><div class="v">${student.hoursPerSession||'—'} hrs</div></div>
+            <div class="item"><div class="k">Tuition month</div><div class="v">default ${student.cycleLength} days</div></div>
+            <div class="item"><div class="k">Guardian</div><div class="v">${escapeHtml(student.guardianName||'—')}</div></div>
+            <div class="item"><div class="k">Guardian's phone</div><div class="v">${escapeHtml(student.guardianPhone||'—')}</div></div>
+          </div>
+          ${student.guardianDetails ? `<div class="meta-line" style="margin-top:6px;">${escapeHtml(student.guardianDetails)}</div>` : ''}
+        </div>
+        <div class="actions">
+          ${student.tuitionActive!==false
+            ? (student.id===data.primaryStudentId
+                ? `<button class="btn-ghost btn-sm" id="btnUnsetPrimary">★ Primary (click to unset)</button>`
+                : `<button class="btn-ghost btn-sm" id="btnSetPrimary">☆ Set as Primary</button>`)
+            : ''
+          }
+          <button class="btn-ghost btn-sm" id="btnToggleActive">${student.tuitionActive===false ? 'Reactivate Tuition' : 'Mark Tuition Ended'}</button>
+          <button class="btn-ghost btn-sm" id="btnEditStudent">Edit</button>
+          <button class="btn-danger btn-sm" id="btnDeleteStudent">Delete</button>
+        </div>
+      </div>
+
+      <div class="add-session-form">
+        <div class="field"><label>Day</label>
+          <select id="sDay"></select>
+        </div>
+        <div class="field"><label>Month</label>
+          <select id="sMonth">${MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Year</label><input type="number" id="sYear" style="min-width:90px;"></div>
+        <button class="btn-primary btn-sm" id="btnAddSession">+ Add Teaching Day</button>
+      </div>
+
+      <div id="cyclesWrap">
+        ${cycles.length===0 ? `<div class="empty-block">No teaching days added yet. Add the first one above.</div>` :
+          cycles.map(c=>`
+            <div class="cycle-block">
+              <div class="cycle-head">
+                <div class="title">Cycle ${c.number}
+                  <select class="cycle-len-select" data-cycle-number="${c.number}" title="Days in this cycle">
+                    ${CYCLE_LENGTH_OPTIONS.map(n=>`<option value="${n}" ${n===c.length?'selected':''}>${n} days</option>`).join('')}
+                  </select>
+                </div>
+                <div class="progress">${c.sessions.length} / ${c.length} days completed</div>
+                <div class="actions">
+                  ${c.complete
+                    ? (c.collected
+                        ? `<span class="badge-collected">Fee Collected</span>`
+                        : `<span class="badge-due">Fee Due</span><button class="btn-ghost btn-sm" data-mark-collected="${c.number}">Mark as Collected</button>`)
+                    : `<span class="badge-progress">In Progress</span>`
+                  }
+                </div>
+              </div>
+              <div class="session-list">
+                ${c.sessions.map(sess=>`
+                  <div class="session-item">
+                    <div class="d">${fmtDate(sess.y,sess.m,sess.d)}</div>
+                    <div class="w">${weekdayName(sess.y,sess.m,sess.d)}</div>
+                    <button class="del" data-del-session="${sess.id}" title="Delete">✕</button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('')
+        }
+      </div>
+    `;
+
+    const t = todayParts();
+    document.getElementById('sYear').value = t.y;
+    document.getElementById('sMonth').value = t.m;
+    refreshDayOptions(t.d);
+
+    document.getElementById('sMonth').addEventListener('change', ()=>refreshDayOptions());
+    document.getElementById('sYear').addEventListener('change', ()=>refreshDayOptions());
+
+    document.getElementById('btnEditStudent').addEventListener('click', ()=>openStudentModal(student));
+    document.getElementById('btnDeleteStudent').addEventListener('click', ()=>deleteStudent(student.id));
+    const btnSetPrimary = document.getElementById('btnSetPrimary');
+    if(btnSetPrimary) btnSetPrimary.addEventListener('click', ()=>setPrimaryStudent(student.id));
+    const btnUnsetPrimary = document.getElementById('btnUnsetPrimary');
+    if(btnUnsetPrimary) btnUnsetPrimary.addEventListener('click', ()=>setPrimaryStudent(null));
+    document.getElementById('btnToggleActive').addEventListener('click', ()=>toggleTuitionActive(student.id));
+    document.getElementById('btnAddSession').addEventListener('click', ()=>addSession(student.id));
+    main.querySelectorAll('[data-del-session]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        student.sessions = student.sessions.filter(s=>s.id!==btn.dataset.delSession);
+        save(); renderAll();
+        toast('Teaching day removed.');
+      });
+    });
+    main.querySelectorAll('[data-mark-collected]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const n = Number(btn.dataset.markCollected);
+        student.collectedCycles = student.collectedCycles || [];
+        if(!student.collectedCycles.includes(n)) student.collectedCycles.push(n);
+        save(); renderAll();
+        toast(`Cycle ${n} marked as fee collected.`);
+      });
+    });
+    main.querySelectorAll('.cycle-len-select').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        setCycleLength(student, Number(sel.dataset.cycleNumber), Number(sel.value));
+      });
+    });
+  }
+
+  function addSession(studentId){
+    const student = data.students.find(s=>s.id===studentId);
+    const d = Number(document.getElementById('sDay').value);
+    const m = Number(document.getElementById('sMonth').value);
+    const y = Number(document.getElementById('sYear').value);
+    if(!y || y<2000 || y>2100){ toast('Please enter a valid year.'); return; }
+    if(d<1 || d>daysInMonth(y,m)){ toast(`${MONTHS[m-1]} ${y} does not have a day ${d}.`); return; }
+    const dup = student.sessions.some(s=>s.y===y && s.m===m && s.d===d);
+    if(dup){ toast('This date has already been added.'); return; }
+    student.sessions.push({ id:uid(), y, m, d });
+    save();
+
+    const cycles = buildCycles(student);
+    const lastCycle = cycles[cycles.length-1];
+    if(lastCycle && lastCycle.complete && lastCycle.sessions.some(s=>s.y===y && s.m===m && s.d===d)){
+      toast(`\uD83C\uDF89 ${lastCycle.length} days of teaching completed for Cycle ${lastCycle.number}! You can now request the fee from the guardian.`);
+    }else{
+      toast(`${fmtDate(y,m,d)} (${weekdayName(y,m,d)}) added.`);
+    }
+    renderAll();
+  }
+
+  function deleteStudent(id){
+    const student = data.students.find(s=>s.id===id);
+    if(!student) return;
+    if(!confirm(`This will delete all records for ${student.name}. This cannot be undone. Continue?`)) return;
+    data.students = data.students.filter(s=>s.id!==id);
+    if(activeStudentId===id) activeStudentId = data.students[0] ? data.students[0].id : null;
+    if(data.primaryStudentId===id) data.primaryStudentId = null;
+    save(); renderAll();
+    toast('Student removed.');
+  }
+
+  // Primary tuition = the one that opens first when the app loads. Only an
+  // active (ongoing) tuition can be primary — ending a tuition that was
+  // primary automatically clears it, since it's no longer the one you're at.
+  function setPrimaryStudent(id){
+    data.primaryStudentId = id;
+    save(); renderAll();
+    toast(id ? 'Set as your primary tuition.' : 'Primary tuition unset.');
+  }
+  function toggleTuitionActive(id){
+    const student = data.students.find(s=>s.id===id);
+    if(!student) return;
+    const wasActive = student.tuitionActive!==false;
+    student.tuitionActive = !wasActive;
+    if(!student.tuitionActive && data.primaryStudentId===id){
+      data.primaryStudentId = null;
+      toast(`${student.name}'s tuition marked as ended. Pick a new primary tuition when you're ready.`);
+    }else{
+      toast(student.tuitionActive ? `${student.name}'s tuition reactivated.` : `${student.name}'s tuition marked as ended.`);
+    }
+    save(); renderAll();
+  }
+
+  // ---- student modal ----
+  function openStudentModal(student){
+    editingStudentId = student ? student.id : null;
+    document.getElementById('studentModalTitle').textContent = student ? 'Edit Student' : 'Add New Student';
+    document.getElementById('fName').value = student ? student.name : '';
+    document.getElementById('fClass').value = student ? student.studentClass||'' : '';
+    document.getElementById('fLocation').value = student ? student.location||'' : '';
+    document.getElementById('fSubjects').value = student ? (student.subjects||[]).join(', ') : '';
+    document.getElementById('fDaysPerWeek').value = student ? student.daysPerWeek||'' : '';
+    document.getElementById('fHours').value = student ? student.hoursPerSession||'' : '';
+    document.getElementById('fFee').value = student ? student.fee||'' : '';
+    document.getElementById('fTransportCost').value = student ? student.transportCost||'' : '';
+    document.getElementById('fOtherCosts').value = student ? student.otherCosts||'' : '';
+    document.getElementById('fCycleLength').value = student ? student.cycleLength||12 : 12;
+    document.getElementById('fGuardianPhone').value = student ? student.guardianPhone||'' : '';
+    document.getElementById('fGuardianName').value = student ? student.guardianName||'' : '';
+    document.getElementById('fGuardianDetails').value = student ? student.guardianDetails||'' : '';
+    document.getElementById('studentModalOverlay').classList.remove('hidden');
+    document.getElementById('fName').focus();
+  }
+  function closeStudentModal(){
+    document.getElementById('studentModalOverlay').classList.add('hidden');
+    editingStudentId = null;
+  }
+  function saveStudentFromModal(){
+    const name = document.getElementById('fName').value.trim();
+    if(!name){ toast("Student's name is required."); return; }
+    const studentClass = document.getElementById('fClass').value.trim();
+    const location = document.getElementById('fLocation').value.trim();
+    const subjects = document.getElementById('fSubjects').value.split(',').map(s=>s.trim()).filter(Boolean);
+    const daysPerWeek = Number(document.getElementById('fDaysPerWeek').value)||0;
+    const hoursPerSession = Number(document.getElementById('fHours').value)||0;
+    const fee = Number(document.getElementById('fFee').value)||0;
+    const transportCost = Number(document.getElementById('fTransportCost').value)||0;
+    const otherCosts = Number(document.getElementById('fOtherCosts').value)||0;
+    let cycleLength = Number(document.getElementById('fCycleLength').value)||12;
+    const guardianPhone = document.getElementById('fGuardianPhone').value.trim();
+    const guardianName = document.getElementById('fGuardianName').value.trim();
+    const guardianDetails = document.getElementById('fGuardianDetails').value.trim();
+
+    if(editingStudentId){
+      const student = data.students.find(s=>s.id===editingStudentId);
+      // Changing the default only affects cycles that don't already have their
+      // own length set — freeze every existing cycle's current length first so
+      // past months (and their fee-collected marks) never shift.
+      if(cycleLength !== student.cycleLength && student.sessions.length>0){
+        lockInExistingCycleLengths(student);
+      }
+      Object.assign(student, {name, studentClass, location, subjects, daysPerWeek, hoursPerSession, fee, transportCost, otherCosts, cycleLength, guardianPhone, guardianName, guardianDetails});
+      toast('Student details updated.');
+    }else{
+      const student = {
+        id:uid(), name, studentClass, location, subjects, daysPerWeek, hoursPerSession, fee, transportCost, otherCosts, cycleLength,
+        guardianPhone, guardianName, guardianDetails, sessions:[], collectedCycles:[], cycleLengths:[], tuitionActive:true
+      };
+      data.students.push(student);
+      activeStudentId = student.id;
+      toast('New student added. Tracking has started.');
+    }
+    save();
+    closeStudentModal();
+    renderAll();
+  }
+
+  // ---- backup / restore ----
+  function exportBackup(){
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const t = todayParts();
+    a.href = url;
+    a.download = `tuition-register-backup-${t.y}-${pad2(t.m)}-${pad2(t.d)}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('Backup exported.');
+  }
+  function importBackup(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const parsed = JSON.parse(reader.result);
+        if(!parsed || !Array.isArray(parsed.students)) throw new Error('bad shape');
+        if(!confirm('Importing will replace all current data. Continue?')) return;
+        data = parsed;
+        activeStudentId = data.students[0] ? data.students[0].id : null;
+        save(); renderAll();
+        toast('Backup imported.');
+      }catch(e){
+        toast("Couldn't read that file — is it a valid backup?");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function renderAll(){ renderStats(); renderNetIncome(); renderPayments(); renderStudentList(); renderMain(); }
+
+  document.getElementById('btnAddStudent').addEventListener('click', ()=>openStudentModal(null));
+  document.getElementById('btnCancelStudent').addEventListener('click', closeStudentModal);
+  document.getElementById('btnSaveStudent').addEventListener('click', saveStudentFromModal);
+  document.getElementById('studentModalOverlay').addEventListener('click', (e)=>{
+    if(e.target.id==='studentModalOverlay') closeStudentModal();
+  });
+  document.getElementById('searchInput').addEventListener('input', renderStudentList);
+  document.getElementById('btnExport').addEventListener('click', exportBackup);
+  document.getElementById('btnImport').addEventListener('click', ()=>document.getElementById('fileImport').click());
+  document.getElementById('pRecMonth').addEventListener('change', ()=>refreshDayOptions(null, {day:'pDay', month:'pRecMonth', year:'pRecYear'}));
+  document.getElementById('pRecYear').addEventListener('change', ()=>refreshDayOptions(null, {day:'pDay', month:'pRecMonth', year:'pRecYear'}));
+  document.getElementById('btnAddPayment').addEventListener('click', addPayment);
+
+  document.getElementById('tabPrimary').addEventListener('click', ()=>showPage('primary'));
+  document.getElementById('tabSecondary').addEventListener('click', ()=>showPage('secondary'));
+  function showPage(page){
+    document.getElementById('pagePrimary').classList.toggle('hidden', page!=='primary');
+    document.getElementById('pageSecondary').classList.toggle('hidden', page!=='secondary');
+    document.getElementById('tabPrimary').classList.toggle('active', page==='primary');
+    document.getElementById('tabSecondary').classList.toggle('active', page==='secondary');
+  }
+  document.getElementById('fileImport').addEventListener('change', (e)=>{
+    if(e.target.files[0]) importBackup(e.target.files[0]);
+    e.target.value = '';
+  });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeStudentModal(); });
+
+  // ---- lock screen wiring ----
+  document.getElementById('btnLockSetupSave').addEventListener('click', ()=>{
+    const p1 = document.getElementById('lpNew1').value.trim();
+    const p2 = document.getElementById('lpNew2').value.trim();
+    const q = document.getElementById('lpQuestion').value.trim();
+    const a = document.getElementById('lpAnswer').value.trim();
+    if(!/^\d{4,6}$/.test(p1)){ setLockError('lockSetupError','PIN must be 4–6 digits.'); return; }
+    if(p1!==p2){ setLockError('lockSetupError','PINs do not match.'); return; }
+    if(!q || !a){ setLockError('lockSetupError','Please add a security question and answer, in case you forget your PIN.'); return; }
+    saveLockData({ pinHash: hashPin(p1), question: q, answerHash: hashPin(a.toLowerCase()) });
+    setLockError('lockSetupError','');
+    document.getElementById('lpConfirm').value = '';
+    setLockError('lockConfirmError','');
+    showLockPanel('lockConfirmNew');
+  });
+
+  document.getElementById('btnLockConfirm').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const val = document.getElementById('lpConfirm').value.trim();
+    if(!lock){ setLockError('lockConfirmError','Something went wrong — please set your PIN again.'); showLockPanel('lockSetup'); return; }
+    if(hashPin(val)===lock.pinHash){
+      setLockError('lockConfirmError','');
+      document.getElementById('lpConfirm').value = '';
+      unlockApp();
+    } else {
+      setLockError('lockConfirmError','That PIN does not match. Try again.');
+    }
+  });
+
+  document.getElementById('btnLockLogin').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const val = document.getElementById('lpLogin').value.trim();
+    if(lock && hashPin(val)===lock.pinHash){
+      setLockError('lockLoginError','');
+      document.getElementById('lpLogin').value = '';
+      unlockApp();
+    } else {
+      setLockError('lockLoginError','Incorrect PIN. Try again.');
+    }
+  });
+
+  document.getElementById('btnForgotPin').addEventListener('click', ()=>{
+    const lock = loadLock();
+    if(!lock) return;
+    document.getElementById('lockQuestionDisplay').textContent = lock.question;
+    document.getElementById('lpForgotAnswer').value = '';
+    setLockError('lockForgotError','');
+    showLockPanel('lockForgotVerify');
+  });
+  document.getElementById('btnForgotCancel').addEventListener('click', ()=>{ showLockPanel('lockLogin'); });
+
+  document.getElementById('btnForgotVerify').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const ans = document.getElementById('lpForgotAnswer').value.trim().toLowerCase();
+    if(lock && hashPin(ans)===lock.answerHash){
+      setLockError('lockForgotError','');
+      document.getElementById('lpReset1').value = '';
+      document.getElementById('lpReset2').value = '';
+      document.getElementById('lpResetQuestion').value = '';
+      document.getElementById('lpResetAnswer').value = '';
+      setLockError('lockResetError','');
+      showLockPanel('lockForgotSetNew');
+    } else {
+      setLockError('lockForgotError','That answer does not match.');
+    }
+  });
+
+  document.getElementById('btnLockResetSave').addEventListener('click', ()=>{
+    const p1 = document.getElementById('lpReset1').value.trim();
+    const p2 = document.getElementById('lpReset2').value.trim();
+    const q = document.getElementById('lpResetQuestion').value.trim();
+    const a = document.getElementById('lpResetAnswer').value.trim();
+    if(!/^\d{4,6}$/.test(p1)){ setLockError('lockResetError','PIN must be 4–6 digits.'); return; }
+    if(p1!==p2){ setLockError('lockResetError','PINs do not match.'); return; }
+    if(!q || !a){ setLockError('lockResetError','Please add a security question and answer.'); return; }
+    saveLockData({ pinHash: hashPin(p1), question: q, answerHash: hashPin(a.toLowerCase()) });
+    setLockError('lockResetError','');
+    document.getElementById('lpConfirm').value = '';
+    setLockError('lockConfirmError','');
+    showLockPanel('lockConfirmNew');
+  });
+
+  document.getElementById('btnLockNow').addEventListener('click', ()=>{ lockApp(); });
+
+  document.getElementById('btnChangePin').addEventListener('click', ()=>{
+    document.getElementById('lpChangeCurrent').value = '';
+    setLockError('lockChangeVerifyError','');
+    document.getElementById('lockScreen').classList.remove('hidden');
+    document.getElementById('appRoot').classList.add('app-hidden');
+    showLockPanel('lockChangeVerify');
+  });
+  document.getElementById('btnChangeCancel').addEventListener('click', ()=>{ unlockApp(); });
+  document.getElementById('btnChangeVerify').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const val = document.getElementById('lpChangeCurrent').value.trim();
+    if(lock && hashPin(val)===lock.pinHash){
+      setLockError('lockChangeVerifyError','');
+      document.getElementById('lpChangeNew1').value = '';
+      document.getElementById('lpChangeNew2').value = '';
+      setLockError('lockChangeNewError','');
+      showLockPanel('lockChangeNew');
+    } else {
+      setLockError('lockChangeVerifyError','Incorrect PIN.');
+    }
+  });
+  document.getElementById('btnChangeSave').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const p1 = document.getElementById('lpChangeNew1').value.trim();
+    const p2 = document.getElementById('lpChangeNew2').value.trim();
+    if(!/^\d{4,6}$/.test(p1)){ setLockError('lockChangeNewError','PIN must be 4–6 digits.'); return; }
+    if(p1!==p2){ setLockError('lockChangeNewError','PINs do not match.'); return; }
+    saveLockData(Object.assign({}, lock, { pinHash: hashPin(p1) }));
+    setLockError('lockChangeNewError','');
+    unlockApp();
+    toast('PIN updated.');
+  });
+  document.querySelectorAll('.lock-panel input').forEach(inp=>{
+    inp.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter'){
+        const btn = inp.closest('.lock-panel').querySelector('.btn-primary');
+        if(btn) btn.click();
+      }
+    });
+  });
+
+  renderAll();
+  initLock();
+})();
+</script>
+</body>
+</html>
