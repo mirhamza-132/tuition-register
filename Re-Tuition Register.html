@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuition Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2b23;
+    --paper:#f5f3ec;
+    --paper-raised:#fbfaf5;
+    --rule:#d9d3bf;
+    --rule-strong:#c2bba3;
+    --green:#1e4a3d;
+    --green-dark:#123128;
+    --green-tint:#e4ece7;
+    --gold:#b8862e;
+    --gold-light:#e9d8ae;
+    --red:#a23e33;
+    --red-tint:#f3e3e0;
+    --shadow: 0 1px 2px rgba(28,43,35,0.06), 0 6px 16px rgba(28,43,35,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter','Hind Siliguri',sans-serif;
+    background-image:
+      repeating-linear-gradient(180deg, transparent, transparent 31px, rgba(28,43,35,0.035) 32px);
+  }
+  h1,h2,h3,.display{ font-family:'Fraunces','Hind Siliguri', serif; font-weight:600; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- Header ---------- */
+  header.top{
+    background:var(--green);
+    color:var(--paper-raised);
+    padding:22px 28px 26px;
+    border-bottom:6px double var(--gold-light);
+    position:relative;
+  }
+  .brand{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .brand .mark{
+    width:38px;height:38px;border-radius:50%;
+    border:2px solid var(--gold-light);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:17px;
+    color:var(--gold-light); flex:none;
+  }
+  .brand h1{ margin:0; font-size:25px; font-weight:600; }
+  .brand .sub{
+    font-family:'IBM Plex Mono',monospace; font-size:11px;
+    letter-spacing:0.1em; text-transform:uppercase; opacity:0.75;
+  }
+  .stats{
+    display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px 26px; width:100%;
+    margin-top:26px; padding-top:6px;
+  }
+  @media (max-width:760px){ .stats{ grid-template-columns:1fr; gap:26px; } }
+  .stat-group{
+    position:relative; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:6px;
+    padding:28px 22px 18px; border-radius:60px;
+    border:1.5px solid rgba(233,216,174,0.5);
+    background:linear-gradient(135deg, rgba(245,243,236,0.10), rgba(245,243,236,0.03));
+  }
+  @media (max-width:520px){ .stat-group{ border-radius:28px; padding:26px 10px 16px; } }
+  .stat-group .group-tag{
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+    background:var(--gold-light); color:var(--green-dark); font-size:10.5px; font-weight:700; letter-spacing:0.14em;
+    text-transform:uppercase; padding:4px 16px; border-radius:20px; white-space:nowrap;
+    box-shadow:0 0 0 4px var(--green);
+  }
+  .stat-group .divider{ width:1px; height:46px; background:linear-gradient(transparent, rgba(233,216,174,0.6), transparent); }
+  .stat{ display:flex; align-items:center; justify-content:center; gap:12px; min-width:0; }
+  .stat .ico{
+    flex:none; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    color:var(--gold-light); border:1.5px solid rgba(233,216,174,0.65); background:rgba(233,216,174,0.12);
+    font-family:'Hind Siliguri','Inter',sans-serif; font-size:19px; font-weight:600;
+  }
+  .stat .txt{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .stat .num{ font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600; line-height:1.1; color:var(--gold-light); white-space:nowrap; }
+  .stat .lbl{ font-size:10.5px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; opacity:0.8; line-height:1.25; }
+  @media (max-width:520px){
+    .stat{ flex-direction:column; gap:6px; text-align:center; }
+    .stat .txt{ align-items:center; }
+    .stat .ico{ width:34px; height:34px; font-size:16px; }
+    .stat .num{ font-size:18px; }
+    .stat .lbl{ font-size:9.5px; }
+  }
+
+  /* ---------- Layout ---------- */
+  .app{ display:grid; grid-template-columns: 310px 1fr; min-height:calc(100vh - 130px); }
+  @media (max-width: 900px){ .app{ grid-template-columns: 1fr; } }
+
+  aside{ border-right:1px solid var(--rule); padding:18px; background:var(--paper); }
+  @media (max-width:900px){ aside{ border-right:none; border-bottom:1px solid var(--rule); } }
+  .search-row{ display:flex; gap:8px; margin-bottom:12px; }
+  input[type="text"], input[type="number"], input[type="tel"], select, textarea{
+    font-family:'Inter','Hind Siliguri',sans-serif; font-size:14px; padding:9px 10px;
+    border:1px solid var(--rule-strong); border-radius:3px;
+    background:var(--paper-raised); color:var(--ink); width:100%;
+  }
+  input:focus, select:focus, textarea:focus{ outline:2px solid var(--green); outline-offset:1px; }
+  button{ font-family:'Inter','Hind Siliguri',sans-serif; font-weight:600; font-size:14px; cursor:pointer; border:none; border-radius:3px; padding:9px 14px; }
+  button:focus-visible{ outline:2px solid var(--green); outline-offset:2px; }
+  .btn-primary{ background:var(--green); color:var(--paper-raised); }
+  .btn-primary:hover{ background:var(--green-dark); }
+  .btn-ghost{ background:transparent; color:var(--green); border:1px solid var(--rule-strong); }
+  .btn-ghost:hover{ background:var(--green-tint); }
+  .btn-danger{ background:transparent; color:var(--red); border:1px solid var(--rule-strong); }
+  .btn-danger:hover{ background:var(--red-tint); }
+  .btn-sm{ padding:6px 10px; font-size:12.5px; }
+  .btn-add-student{ width:100%; margin-bottom:16px; }
+
+  .student-card{
+    border:1px solid var(--rule); border-radius:4px; padding:11px 12px; margin-bottom:8px;
+    background:var(--paper-raised); cursor:pointer; transition:border-color .15s, box-shadow .15s;
+  }
+  .student-card:hover{ border-color:var(--green); }
+  .student-card.active{ border-color:var(--green); box-shadow:var(--shadow); border-left:4px solid var(--gold); }
+  .student-card.ended{ opacity:0.55; }
+  .student-card .name{ font-weight:600; font-size:15px; display:flex; align-items:center; gap:6px; }
+  .student-card .name .star{ color:var(--gold); font-size:13px; }
+  .student-card .meta{ font-size:12px; color:#5c6b62; margin-top:2px; }
+  .student-card .row{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; flex-wrap:wrap; gap:6px; }
+
+  /* Stamp: flat pill, no rotation, so the label sits centered and symmetric */
+  .stamp{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+    letter-spacing:0.06em; line-height:1; padding:4px 10px; border-radius:20px; border:1.5px solid;
+    white-space:nowrap; text-align:center;
+  }
+  .stamp.due{ color:var(--red); border-color:var(--red); background:var(--red-tint); }
+  .stamp.clear{ color:var(--green); border-color:var(--green); background:var(--green-tint); }
+  .stamp.primary{ color:var(--gold); border-color:var(--gold); background:var(--gold-light); }
+  .stamp.ended{ color:#7a8579; border-color:var(--rule-strong); background:var(--paper); }
+
+  .empty-sidebar{ font-size:13px; color:#7a8579; padding:8px 2px; }
+
+  main{ padding:26px 30px 60px; }
+  @media (max-width:900px){ main{ padding:20px 16px 50px; } }
+
+  .placeholder{ max-width:440px; margin:60px auto; text-align:center; color:#6c766c; }
+  .placeholder h2{ color:var(--ink); font-size:20px; margin-bottom:8px; }
+
+  .student-header{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;
+    border-bottom:1px solid var(--rule); padding-bottom:16px; margin-bottom:14px;
+  }
+  .student-header h2{ margin:0 0 6px; font-size:24px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .student-header .meta-line{ font-size:13.5px; color:#48534b; margin-top:3px; }
+  .student-header .meta-line b{ color:var(--ink); font-weight:600; }
+  .student-header .actions{ display:flex; gap:8px; }
+  .info-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px 20px;
+    margin-top:12px; margin-bottom:6px;
+  }
+  .info-grid .item .k{ font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#7a8579; }
+  .info-grid .item .v{ font-size:14px; margin-top:2px; }
+  .chip{
+    display:inline-block; background:var(--green-tint); color:var(--green-dark); font-size:12px;
+    padding:2px 9px; border-radius:12px; margin:2px 4px 2px 0;
+  }
+
+  .add-session-form{
+    display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;
+    background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:14px; margin-bottom:22px;
+  }
+  .add-session-form .field{ display:flex; flex-direction:column; gap:4px; }
+  .add-session-form label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .add-session-form select, .add-session-form input{ min-width:88px; }
+
+  .cycle-block{ margin-bottom:22px; border:1px solid var(--rule); border-radius:6px; overflow:hidden; background:var(--paper-raised); }
+  .cycle-head{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    padding:12px 16px; background:var(--green-tint); border-bottom:1px solid var(--rule);
+  }
+  .cycle-head .title{ font-weight:600; font-size:15px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .cycle-head .progress{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#3d4a41; }
+  .cycle-head .actions{ display:flex; gap:8px; align-items:center; }
+  .cycle-len-select{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:600; color:var(--green-dark);
+    background:var(--paper-raised); border:1px solid var(--rule-strong); border-radius:12px;
+    padding:3px 8px; cursor:pointer;
+  }
+  .cycle-len-select:hover{ border-color:var(--green); }
+  .badge-due{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--red); color:#fff; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:14px;
+  }
+  .badge-collected{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--green); color:#fff; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:14px;
+  }
+  .badge-progress{
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--paper); color:#5c6b62; font-size:11.5px; padding:4px 10px; border-radius:14px; border:1px solid var(--rule-strong);
+  }
+
+  .session-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0; }
+  .session-item{
+    padding:12px 14px; border-bottom:1px solid var(--rule); border-right:1px solid var(--rule);
+    position:relative;
+  }
+  .session-item .d{ font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; }
+  .session-item .w{ font-size:12px; color:#5c6b62; margin-top:2px; }
+  .session-item .del{
+    position:absolute; top:6px; right:6px; background:none; border:none; color:#a3a99a;
+    font-size:13px; padding:2px 5px; cursor:pointer;
+  }
+  .session-item .del:hover{ color:var(--red); }
+
+  .empty-block{ padding:24px; text-align:center; color:#8b9186; font-style:italic; font-size:13.5px; }
+
+  .net-income-section{
+    background:var(--paper-raised); border-bottom:1px solid var(--rule);
+    padding:20px 30px 26px;
+  }
+  @media (max-width:900px){ .net-income-section{ padding:16px 16px 22px; } }
+  .net-income-head h2{ margin:0 0 3px; font-size:19px; }
+  .net-income-head p{ margin:0 0 14px; font-size:12.5px; color:#5c6b62; }
+  .net-income-table{ width:100%; min-width:800px; border-collapse:collapse; font-size:13.5px; table-layout:auto; }
+  .net-income-table th, .net-income-table td{
+    padding:12px 20px; text-align:right; border-bottom:1px solid var(--rule); border-right:1px solid var(--rule);
+    white-space:nowrap; vertical-align:middle;
+  }
+  .net-income-table th:last-child, .net-income-table td:last-child{ border-right:none; }
+  .net-income-table th:first-child, .net-income-table td:first-child{ text-align:left; white-space:normal; min-width:150px; }
+  .net-income-table thead th{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62;
+    border-bottom:1px solid var(--rule-strong); font-weight:600;
+  }
+  .net-income-table tbody tr:hover{ background:var(--green-tint); }
+  .net-income-table td.name{ font-weight:600; }
+  .net-income-table td.net{ font-weight:700; color:var(--green-dark); font-family:'IBM Plex Mono',monospace; }
+  .net-income-table td.negative{ color:var(--red); }
+  .net-income-table tfoot td{
+    border-bottom:none; border-top:2px solid var(--rule-strong); font-weight:700;
+    font-family:'IBM Plex Mono',monospace; padding-top:12px;
+  }
+  .net-income-table .mono-cell{ font-family:'IBM Plex Mono',monospace; }
+
+  .payments-section{
+    background:var(--paper); border-bottom:1px solid var(--rule);
+    padding:20px 30px 26px;
+  }
+  @media (max-width:900px){ .payments-section{ padding:16px 16px 22px; } }
+  .payments-head h2{ margin:0 0 3px; font-size:19px; }
+  .payments-head p{ margin:0 0 14px; font-size:12.5px; color:#5c6b62; }
+  .add-payment-form{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px 16px; align-items:end;
+    background:var(--paper-raised); border:1px solid var(--rule); border-radius:6px; padding:16px; margin-bottom:18px;
+  }
+  .add-payment-form .field{ display:flex; flex-direction:column; gap:5px; min-width:0; }
+  .add-payment-form .field.wide{ grid-column:span 2; }
+  @media (max-width:560px){ .add-payment-form .field.wide{ grid-column:auto; } }
+  .add-payment-form label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .add-payment-form select, .add-payment-form input{ min-width:0; width:100%; }
+  .add-payment-form button{ height:38px; width:100%; }
+  .table-scroll{ width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:18px; }
+  .payments-table{ width:100%; min-width:780px; border-collapse:collapse; font-size:13.5px; table-layout:auto; margin-bottom:0; }
+  .payments-table th, .payments-table td{
+    padding:12px 20px; text-align:left; border-bottom:1px solid var(--rule); border-right:1px solid var(--rule);
+    white-space:nowrap; vertical-align:middle;
+  }
+  .payments-table th:last-child, .payments-table td:last-child{ border-right:none; }
+  .payments-table th:nth-child(2), .payments-table td:nth-child(2){ white-space:normal; min-width:150px; }
+  .payments-table th:nth-child(4), .payments-table td:nth-child(4){ text-align:right; }
+  .payments-table th:nth-child(5), .payments-table td:nth-child(5){ white-space:normal; word-break:break-word; min-width:180px; }
+  .payments-table th:nth-child(6), .payments-table td:nth-child(6){ text-align:center; width:56px; padding:12px 10px; }
+  .payments-table thead th{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62;
+    border-bottom:1px solid var(--rule-strong); font-weight:600;
+  }
+  .payments-table tbody tr:hover{ background:var(--green-tint); }
+  .payments-table td.amt{ font-weight:700; font-family:'IBM Plex Mono',monospace; color:var(--green-dark); }
+  .payments-table tfoot td{
+    border-bottom:none; border-top:2px solid var(--rule-strong); font-weight:700;
+    font-family:'IBM Plex Mono',monospace; padding-top:12px; white-space:nowrap;
+  }
+  .payments-table .del{ background:none; border:none; color:#a3a99a; font-size:13px; cursor:pointer; padding:2px 5px; }
+  .payments-table .del:hover{ color:var(--red); }
+  .payments-summary{
+    display:flex; gap:0; flex-wrap:wrap; border:1px solid var(--rule); border-radius:6px; overflow:hidden;
+  }
+  .payments-summary .cell{
+    flex:1 1 0; min-width:150px; padding:10px 16px; border-right:1px solid var(--rule); background:var(--paper-raised);
+  }
+  .payments-summary .cell:last-child{ border-right:none; }
+  .payments-summary .cell .k{ font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:#7a8579; }
+  .payments-summary .cell .v{ font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:600; margin-top:2px; color:var(--green-dark); }
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(18,49,40,0.45);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;
+  }
+  .hidden{ display:none !important; }
+  .modal{
+    background:var(--paper-raised); border-radius:6px; padding:24px; width:100%; max-width:480px;
+    box-shadow:0 12px 40px rgba(18,49,40,0.3); border-top:5px solid var(--gold);
+    max-height:88vh; overflow-y:auto;
+  }
+  .modal h3{ margin-top:0; margin-bottom:16px; font-size:19px; }
+  .modal .field{ margin-bottom:14px; display:flex; flex-direction:column; gap:5px; }
+  .modal .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .modal label{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .modal .hint-text{ font-size:11.5px; color:#8b9186; margin-top:-2px; }
+  .modal .modal-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:18px; }
+
+  .footer-bar{ display:flex; justify-content:center; gap:10px; padding:16px; border-top:1px solid var(--rule); }
+
+  /* ---------- Page nav ---------- */
+  .page-nav{
+    display:flex; gap:0; background:var(--green-dark); padding:0 28px;
+    border-bottom:1px solid rgba(245,243,236,0.15);
+  }
+  @media (max-width:900px){ .page-nav{ padding:0 16px; } }
+  .page-tab{
+    background:none; border:none; border-bottom:3px solid transparent;
+    color:rgba(245,243,236,0.65); font-family:'Inter','Hind Siliguri',sans-serif;
+    font-weight:600; font-size:13.5px; padding:14px 18px; cursor:pointer;
+    letter-spacing:0.01em; border-radius:0;
+  }
+  .page-tab:hover{ color:var(--paper-raised); }
+  .page-tab.active{ color:var(--gold-light); border-bottom-color:var(--gold-light); }
+  .page{ display:block; }
+  .page.hidden{ display:none !important; }
+
+  /* ---------- Lock screen ---------- */
+  .lock-controls{ display:flex; gap:8px; align-items:center; position:absolute; top:22px; right:28px; }
+  @media (max-width:900px){ .lock-controls{ position:static; margin-top:12px; width:100%; } }
+  .lock-controls .btn-ghost{ background:transparent; color:var(--gold-light); border:1px solid rgba(245,243,236,0.4); }
+  .lock-controls .btn-ghost:hover{ background:rgba(245,243,236,0.12); }
+  .icon-btn{
+    width:34px; height:34px; padding:0; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+    background:transparent; color:var(--gold-light); border:1px solid rgba(245,243,236,0.4); transition:background .15s;
+  }
+  .icon-btn:hover{ background:rgba(245,243,236,0.14); }
+  .icon-btn:focus-visible{ outline:2px solid var(--gold-light); outline-offset:2px; }
+  .icon-btn svg{ display:block; }
+  @media (max-width:900px){ .lock-controls{ justify-content:flex-end; } }
+  .lock-screen{
+    position:fixed; inset:0; z-index:9999; background:var(--paper);
+    display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;
+  }
+  .lock-screen.hidden{ display:none; }
+  #appRoot.app-hidden{ display:none; }
+  .lock-card{
+    width:100%; max-width:380px; background:var(--paper-raised); border:1px solid var(--rule);
+    border-radius:10px; padding:26px 24px; box-shadow:0 10px 30px rgba(20,30,25,0.12); margin:auto;
+  }
+  .lock-brand{ display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .lock-brand .mark{
+    width:38px; height:38px; border-radius:8px; background:var(--green-dark); color:var(--gold-light);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px;
+  }
+  .lock-brand h1{ margin:0; font-size:17px; }
+  .lock-brand .sub{ font-size:11.5px; color:#8b9186; text-transform:uppercase; letter-spacing:0.06em; }
+  .lock-panel.hidden{ display:none; }
+  .lock-panel h2{ margin:0 0 6px; font-size:18px; }
+  .lock-panel p{ margin:0 0 16px; font-size:12.5px; color:#5c6b62; line-height:1.5; }
+  .lock-panel .field{ margin-bottom:12px; display:flex; flex-direction:column; gap:5px; }
+  .lock-panel label{ font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:#5c6b62; }
+  .lock-panel input{ font-size:16px; letter-spacing:0.08em; }
+  .lock-question{ background:var(--green-tint); border-radius:6px; padding:10px 12px; font-size:13px; color:var(--green-dark); font-weight:600; }
+  .lock-error{ color:var(--red); font-size:12.5px; min-height:16px; margin:2px 0 10px; }
+  .lock-link{
+    display:block; width:100%; text-align:center; background:none; border:none; color:#5c6b62;
+    font-size:12.5px; text-decoration:underline; cursor:pointer; margin-top:12px; padding:4px;
+  }
+  .lock-link:hover{ color:var(--green-dark); }
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--green-dark); color:var(--paper-raised); padding:11px 20px; border-radius:4px;
+    font-size:13.5px; box-shadow:var(--shadow); z-index:100; opacity:0; pointer-events:none;
+    transition:opacity .25s, transform .25s; max-width:90vw; text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+  /* ---------- Polish pass: smoother, richer, better structured ---------- */
+  button{ transition:background .15s, transform .1s, box-shadow .15s, border-color .15s, color .15s; }
+  button:active:not(:disabled){ transform:translateY(1px) scale(.99); }
+  .btn-primary:hover{ box-shadow:0 3px 10px rgba(18,49,40,.25); }
+  input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(30,74,61,.16); }
+  input, select, textarea{ transition:border-color .15s, box-shadow .15s; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
+  .cycle-block, .student-card{ animation:rise .25s ease both; }
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+
+  /* Add teaching day */
+  .add-session-form{ border-radius:12px; box-shadow:var(--shadow); padding:16px 18px; gap:12px; align-items:flex-end; }
+  .add-session-form .form-title{ width:100%; font-family:'Fraunces','Hind Siliguri',serif; font-size:15px; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .add-session-form .form-title small{ font-family:'Inter',sans-serif; font-size:11.5px; font-weight:400; color:#7a8579; }
+  .add-session-form .field{ flex:1 1 110px; min-width:0; }
+  .add-session-form select, .add-session-form input{ min-width:0; width:100%; }
+  .add-session-form .btn-row{ display:flex; gap:8px; flex-wrap:wrap; }
+
+  /* Cycle cards */
+  .cycle-block{ border-radius:14px; border:1px solid var(--rule); border-left:5px solid var(--rule-strong); box-shadow:var(--shadow); margin-bottom:20px; }
+  .cycle-block.is-due{ border-left-color:var(--red); }
+  .cycle-block.is-collected{ border-left-color:var(--green); }
+  .cycle-block.is-progress{ border-left-color:var(--gold); }
+  .cycle-head{
+    display:grid; grid-template-columns:minmax(0,1.3fr) minmax(170px,1fr) auto; gap:12px 22px; align-items:center;
+    padding:14px 18px; background:linear-gradient(180deg,var(--green-tint),#edf2ee);
+  }
+  @media (max-width:760px){ .cycle-head{ grid-template-columns:1fr; } }
+  .cycle-left{ display:flex; align-items:center; gap:12px; min-width:0; }
+  .cycle-num{
+    flex:none; width:40px; height:40px; border-radius:50%; background:var(--green); color:var(--gold-light);
+    font-family:'Fraunces',serif; font-weight:600; font-size:17px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 3px var(--green-tint), 0 0 0 4px var(--rule-strong);
+  }
+  .cycle-head .range{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#5c6b62; margin-top:3px; }
+  .pbar{ height:8px; border-radius:6px; background:rgba(28,43,35,.1); overflow:hidden; }
+  .pbar i{ display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,var(--gold),var(--green)); transition:width .4s ease; }
+  .cycle-mid .progress{ margin-top:6px; font-size:12px; }
+  .cycle-head .actions{ justify-content:flex-end; flex-wrap:wrap; }
+  .session-list{ grid-template-columns:repeat(auto-fill,minmax(118px,1fr)); gap:10px; padding:14px; background:var(--paper-raised); }
+  .session-item{
+    border:1px solid var(--rule); border-radius:10px; background:#fff; text-align:center; padding:14px 8px 10px;
+    transition:transform .15s, box-shadow .15s, border-color .15s;
+  }
+  .session-item:hover{ transform:translateY(-2px); box-shadow:var(--shadow); border-color:var(--green); }
+  .session-item .idx{
+    position:absolute; top:6px; left:6px; min-width:20px; height:20px; padding:0 5px; border-radius:10px;
+    background:var(--green-tint); color:var(--green-dark); font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .session-item .d-big{ font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; line-height:1.1; color:var(--green-dark); }
+  .session-item .d-meta{ font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c6b62; margin-top:2px; }
+  .session-item .w{ font-size:12px; color:#7a8579; margin-top:4px; }
+  .session-item.today{ border-color:var(--gold); background:#fffaf0; }
+  .session-item.today .idx{ background:var(--gold); color:#fff; }
+  .session-item.empty{ border-style:dashed; background:transparent; opacity:.65; }
+  .session-item.empty:hover{ transform:none; box-shadow:none; border-color:var(--rule); }
+  .session-item .del{ opacity:.45; transition:opacity .15s, color .15s; }
+  .session-item:hover .del{ opacity:1; }
+
+  /* Tables */
+  .table-scroll{ border:1px solid var(--rule); border-radius:12px; background:var(--paper-raised); box-shadow:var(--shadow); }
+  .payments-table tbody tr:nth-child(even){ background:rgba(28,43,35,.025); }
+  .payments-table tbody tr:hover{ background:var(--green-tint); }
+  .month-pill{ display:inline-block; background:var(--green-tint); color:var(--green-dark); border-radius:12px; padding:3px 11px; font-size:12px; font-weight:600; }
+  .share{ width:84px; height:4px; border-radius:3px; background:rgba(28,43,35,.1); margin:6px 0 0 auto; overflow:hidden; }
+  .share i{ display:block; height:100%; background:var(--green); border-radius:3px; }
+  .payments-summary{ border-radius:12px; margin-bottom:14px; box-shadow:var(--shadow); }
+  .payments-summary .cell{ padding:12px 18px; }
+
+  /* Add payment form */
+  .add-payment-form{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; padding:0; background:none; border:none;
+    margin-bottom:20px; align-items:stretch;
+  }
+  .pay-card{ background:var(--paper-raised); border:1px solid var(--rule); border-radius:12px; padding:14px 16px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:12px; }
+  .pay-card h4{ margin:0; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--green); display:flex; align-items:center; gap:8px; font-family:'Inter','Hind Siliguri',sans-serif; font-weight:700; }
+  .pay-card h4 .step{ width:20px; height:20px; border-radius:50%; background:var(--green); color:var(--gold-light); font-size:11px; display:inline-flex; align-items:center; justify-content:center; letter-spacing:0; }
+  .pay-card h4 .chip-btn{ margin-left:auto; }
+  .pay-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px; }
+  .pay-card .field{ display:flex; flex-direction:column; gap:5px; min-width:0; }
+  .money-input{ position:relative; }
+  .money-input span{ position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#7a8579; font-weight:600; pointer-events:none; font-family:'Hind Siliguri','Inter',sans-serif; }
+  .money-input input{ padding-left:28px; font-family:'IBM Plex Mono',monospace; font-weight:600; }
+  .add-payment-form .chip-btn{
+    height:auto; width:auto; background:var(--green-tint); color:var(--green-dark); border:1px solid transparent; border-radius:14px;
+    font-size:11px; padding:3px 10px; text-transform:none; letter-spacing:0; font-weight:600;
+  }
+  .add-payment-form .chip-btn:hover:not(:disabled){ border-color:var(--green); }
+  .add-payment-form .chip-btn:disabled{ opacity:.4; cursor:default; }
+  .pay-submit{ grid-column:1/-1; display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; }
+  .pay-submit .field{ flex:1 1 240px; display:flex; flex-direction:column; gap:5px; }
+  .add-payment-form .pay-submit button{ width:auto; height:40px; padding:0 28px; }
+  @media (max-width:560px){ .add-payment-form .pay-submit button{ width:100%; } }
+
+  /* Student modal */
+  .modal{ max-width:560px; border-radius:14px; }
+  .modal-section{
+    font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); font-weight:700;
+    margin:6px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--rule);
+  }
+  .modal-section:not(:first-of-type){ margin-top:20px; }
+  .net-preview{
+    display:flex; justify-content:space-between; align-items:center; background:var(--green-tint); color:var(--green-dark);
+    border-radius:8px; padding:10px 14px; font-size:13px;
+  }
+  .net-preview b{ font-family:'IBM Plex Mono',monospace; font-size:16px; }
+  .net-preview.negative{ background:var(--red-tint); color:var(--red); }
+
+  /* One-time (first-cycle) cost */
+  .chip-btn{ background:var(--green-tint); color:var(--green-dark); border:1px solid transparent; border-radius:14px; font-size:11px; font-weight:600; padding:4px 11px; }
+  .chip-btn:hover:not(:disabled){ border-color:var(--green); }
+  .net-income-table .subtle{ font-size:11px; font-weight:400; color:#7a8579; margin-top:2px; }
+  .net-income-table .dash{ color:#a3a99a; }
+  .lifetime{ margin-top:26px; }
+  .lifetime h3{ margin:0 0 10px; font-size:16px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .lifetime h3 small{ font-family:'Inter','Hind Siliguri',sans-serif; font-size:12px; font-weight:400; color:#7a8579; }
+  .payments-summary .cell .v.negative{ color:var(--red); }
+  .lifetime-note{ margin-top:10px; font-size:12.5px; color:#5c6b62; background:var(--gold-light); border-radius:8px; padding:9px 12px; line-height:1.5; }
+  .stat .sub{ font-size:10.5px; opacity:.72; line-height:1.2; margin-top:1px; }
+
+  /* ---------- Detail sheets ---------- */
+  .detail-sheet{
+    background:var(--paper); width:100%; max-width:980px; max-height:92vh; display:flex; flex-direction:column;
+    border-radius:14px; border-top:5px solid var(--gold); box-shadow:0 16px 48px rgba(18,49,40,.35); overflow:hidden;
+    animation:rise .2s ease both;
+  }
+  .detail-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:18px 22px 14px; border-bottom:1px solid var(--rule); background:var(--paper-raised); }
+  .detail-head h3{ margin:0 0 3px; font-size:21px; }
+  .detail-head p{ margin:0; font-size:12.5px; color:#5c6b62; }
+  .detail-close{ flex:none; width:34px; height:34px; padding:0; border-radius:50%; background:var(--paper); color:#5c6b62; border:1px solid var(--rule-strong); font-size:14px; }
+  .detail-close:hover{ background:var(--red-tint); color:var(--red); border-color:var(--red); }
+  .detail-body{ overflow:auto; padding:18px 22px 26px; -webkit-overflow-scrolling:touch; }
+  @media (max-width:600px){ .detail-head, .detail-body{ padding-left:14px; padding-right:14px; } }
+  .dgroup{ background:var(--paper-raised); border:1px solid var(--rule); border-radius:12px; box-shadow:var(--shadow); margin-bottom:16px; overflow:hidden; }
+  .dgroup-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 16px; background:var(--green-tint); border-bottom:1px solid var(--rule); }
+  .dgroup-head:last-child{ border-bottom:none; }
+  .dname{ font-family:'Fraunces','Hind Siliguri',serif; font-weight:600; font-size:16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .dtotal{ font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:var(--green-dark); }
+  .dtotal.muted{ font-family:'Inter',sans-serif; font-weight:400; color:#7a8579; font-style:italic; }
+  .dgroup .table-scroll{ border:none; border-radius:0; box-shadow:none; margin:0; background:transparent; }
+  .detail-table{ width:100%; min-width:560px; border-collapse:collapse; font-size:13.5px; }
+  .detail-table th, .detail-table td{ padding:11px 16px; text-align:left; border-bottom:1px solid var(--rule); border-right:1px solid var(--rule); white-space:nowrap; vertical-align:middle; }
+  .detail-table th:last-child, .detail-table td:last-child{ border-right:none; }
+  .detail-table .r{ text-align:right; }
+  .detail-table td.r{ font-family:'IBM Plex Mono',monospace; }
+  .detail-table .wrap{ white-space:normal; word-break:break-word; min-width:120px; }
+  .detail-table thead th{ font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#5c6b62; font-weight:600; border-bottom:1px solid var(--rule-strong); }
+  .detail-table tbody tr:nth-child(even){ background:rgba(28,43,35,.025); }
+  .detail-table tbody tr:hover{ background:var(--green-tint); }
+  .detail-table td.amt{ font-weight:700; color:var(--green-dark); }
+  .detail-table tfoot td{ border-bottom:none; border-top:2px solid var(--rule-strong); font-weight:700; font-family:'IBM Plex Mono',monospace; }
+  .detail-table .dash{ color:#a3a99a; }
+
+  /* Clickable summary cells */
+  .payments-summary .cell.link{
+    display:block; text-align:left; font:inherit; color:inherit; cursor:pointer; border:none; border-right:1px solid var(--rule);
+    border-radius:0; background:var(--paper-raised); padding:12px 18px; flex:1 1 0; min-width:150px; transition:background .15s;
+  }
+  .payments-summary .cell.link:hover{ background:var(--green-tint); }
+  .payments-summary .cell .more{ font-size:11px; color:var(--green); font-weight:600; margin-top:4px; }
+
+  /* ---------- Tuition details: header card, info tiles, action buttons ---------- */
+  .student-header{
+    background:var(--paper-raised); border:1px solid var(--rule); border-left:5px solid var(--gold); border-radius:14px;
+    box-shadow:var(--shadow); padding:20px 22px; margin-bottom:18px; gap:16px; animation:rise .25s ease both;
+  }
+  .student-header h2{ font-size:27px; letter-spacing:-.01em; }
+  .student-header .meta-line{ color:#5c6b62; font-size:13.5px; }
+  .info-grid{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-top:14px; }
+  .info-grid .item{ background:var(--paper); border:1px solid var(--rule); border-radius:10px; padding:9px 12px; }
+  .info-grid .item .k{ font-size:10.5px; letter-spacing:.08em; }
+  .info-grid .item .v{ font-weight:600; font-size:14.5px; margin-top:3px; }
+  .student-header .actions{ display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; align-items:center; }
+  @media (max-width:700px){ .student-header .actions{ justify-content:flex-start; width:100%; } }
+  .act-btn{
+    display:inline-flex; align-items:center; gap:7px; padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:600;
+    background:var(--paper); color:var(--green-dark); border:1px solid var(--rule-strong);
+  }
+  .act-btn svg{ flex:none; }
+  .act-btn:hover{ background:var(--green-tint); border-color:var(--green); }
+  .act-btn.act-primary.on{ background:var(--gold-light); border-color:var(--gold); color:#7a5516; }
+  .act-btn.act-end:hover{ background:#fbf1dc; border-color:var(--gold); color:#7a5516; }
+  .act-btn.act-react{ color:var(--green); border-color:var(--green); }
+  .act-btn.act-del{ color:var(--red); }
+  .act-btn.act-del:hover{ background:var(--red-tint); border-color:var(--red); }
+
+  /* Sidebar cards */
+  .student-card{ border-radius:12px; padding:12px 14px; transition:border-color .15s, box-shadow .15s, transform .15s, background .15s; }
+  .student-card:hover{ box-shadow:var(--shadow); transform:translateY(-1px); }
+  .student-card.active{ background:var(--green-tint); }
+  .student-card .name{ font-family:'Fraunces','Hind Siliguri',serif; font-size:15.5px; }
+  .btn-add-student{ border-radius:10px; padding:11px 14px; }
+  #searchInput{ border-radius:10px; }
+  .net-preview{ flex-wrap:wrap; row-gap:4px; }
+  .net-preview .np-sub{ width:100%; font-size:11.5px; opacity:.8; }
+  .detail-table .subtle{ font-family:'Inter',sans-serif; font-size:11px; font-weight:400; color:#7a8579; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<div id="lockScreen" class="lock-screen">
+  <div class="lock-card">
+    <div class="lock-brand">
+      <div class="mark">T</div>
+      <div>
+        <h1>Tuition Register</h1>
+        <div class="sub">Locked</div>
+      </div>
+    </div>
+
+    <div id="lockSetup" class="lock-panel hidden">
+      <h2>Set a PIN</h2>
+      <p>This protects your student and income pages. Choose a 4–6 digit PIN.</p>
+      <div class="field"><label>New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpNew1" placeholder="••••"></div>
+      <div class="field"><label>Confirm PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpNew2" placeholder="••••"></div>
+      <div class="field"><label>Security question (for reset)</label><input type="text" id="lpQuestion" placeholder="e.g. My first school's name?"></div>
+      <div class="field"><label>Answer</label><input type="text" id="lpAnswer" placeholder="Your answer"></div>
+      <div class="lock-error" id="lockSetupError"></div>
+      <button class="btn-primary" id="btnLockSetupSave" style="width:100%;">Save PIN</button>
+    </div>
+
+    <div id="lockConfirmNew" class="lock-panel hidden">
+      <h2>Confirm your PIN</h2>
+      <p>Your PIN is saved. Enter it once more to open the website — it opens automatically when it matches.</p>
+      <div class="field"><label>PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpConfirm" placeholder="••••"></div>
+      <div class="lock-error" id="lockConfirmError"></div>
+      <button class="btn-primary hidden" id="btnLockConfirm" style="width:100%;">Enter</button>
+    </div>
+
+    <div id="lockLogin" class="lock-panel hidden">
+      <h2>Enter your PIN</h2>
+      <p>Enter your PIN to unlock the Student Register and Money pages. It opens automatically as soon as the PIN is correct.</p>
+      <div class="field"><label>PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpLogin" placeholder="••••"></div>
+      <div class="lock-error" id="lockLoginError"></div>
+      <button class="btn-primary hidden" id="btnLockLogin" style="width:100%;">Unlock</button>
+      <button class="lock-link" id="btnForgotPin">Forgot PIN?</button>
+    </div>
+
+    <div id="lockForgotVerify" class="lock-panel hidden">
+      <h2>Reset PIN</h2>
+      <p id="lockQuestionDisplay" class="lock-question"></p>
+      <div class="field"><label>Answer</label><input type="text" id="lpForgotAnswer" placeholder="Your answer"></div>
+      <div class="lock-error" id="lockForgotError"></div>
+      <button class="btn-primary" id="btnForgotVerify" style="width:100%;">Verify Answer</button>
+      <button class="lock-link" id="btnForgotCancel">Back to PIN entry</button>
+    </div>
+
+    <div id="lockForgotSetNew" class="lock-panel hidden">
+      <h2>Set a new PIN</h2>
+      <p>Answer verified. Choose a new PIN and a new security question.</p>
+      <div class="field"><label>New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpReset1" placeholder="••••"></div>
+      <div class="field"><label>Confirm New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpReset2" placeholder="••••"></div>
+      <div class="field"><label>Security question (for reset)</label><input type="text" id="lpResetQuestion" placeholder="e.g. My first school's name?"></div>
+      <div class="field"><label>Answer</label><input type="text" id="lpResetAnswer" placeholder="Your answer"></div>
+      <div class="lock-error" id="lockResetError"></div>
+      <button class="btn-primary" id="btnLockResetSave" style="width:100%;">Save New PIN</button>
+    </div>
+
+    <div id="lockChangeVerify" class="lock-panel hidden">
+      <h2>Change PIN</h2>
+      <p>Enter your current PIN to continue.</p>
+      <div class="field"><label>Current PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpChangeCurrent" placeholder="••••"></div>
+      <div class="lock-error" id="lockChangeVerifyError"></div>
+      <button class="btn-primary" id="btnChangeVerify" style="width:100%;">Continue</button>
+      <button class="lock-link" id="btnChangeCancel">Cancel</button>
+    </div>
+
+    <div id="lockChangeNew" class="lock-panel hidden">
+      <h2>Choose a new PIN</h2>
+      <div class="field"><label>New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpChangeNew1" placeholder="••••"></div>
+      <div class="field"><label>Confirm New PIN</label><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="lpChangeNew2" placeholder="••••"></div>
+      <div class="lock-error" id="lockChangeNewError"></div>
+      <button class="btn-primary" id="btnChangeSave" style="width:100%;">Save PIN</button>
+    </div>
+  </div>
+</div>
+
+<div id="appRoot">
+
+<header class="top">
+  <div class="brand">
+    <div class="mark">T</div>
+    <div>
+      <h1>Tuition Register</h1>
+      <div class="sub">Student &amp; Cycle Ledger</div>
+    </div>
+  </div>
+  <div class="stats" id="statsRow"></div>
+  <div class="lock-controls">
+    <button class="icon-btn" id="btnChangePin" title="Change PIN" aria-label="Change PIN">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 20 3M16 7l3 3M14 9l2 2"/></svg>
+    </button>
+    <button class="icon-btn" id="btnLockNow" title="Unlocked — click to lock" aria-label="Lock the app">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.4-2"/></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="page-nav">
+  <button class="page-tab active" id="tabPrimary" data-page="primary">Student Register</button>
+  <button class="page-tab" id="tabSecondary" data-page="secondary">Money &amp; Net Income</button>
+</nav>
+
+<div class="page" id="pagePrimary">
+<div class="app">
+  <aside>
+    <button class="btn-primary btn-add-student" id="btnAddStudent">+ Add New Student</button>
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder="Search by name, class, or subject…">
+    </div>
+    <div id="studentList"></div>
+  </aside>
+
+  <main id="mainPanel">
+    <div class="placeholder">
+      <h2>No student selected</h2>
+      <p>Choose a student from the list on the left, or add a new student to start tracking.</p>
+    </div>
+  </main>
+</div>
+</div>
+
+<div class="page hidden" id="pageSecondary">
+<section class="net-income-section" id="netIncomeSection">
+  <div class="net-income-head">
+    <h2>Net Monthly Income</h2>
+    <p>All money-calculation happens here, separate from each student's own details. Fee minus transport (per-day cost × days in the cycle) and other running costs, for a full cycle. Only active tuitions are counted — ended tuitions are excluded. A tuition's one-time cost counts only in its Cycle 1.</p>
+  </div>
+  <div id="netIncomeBody"></div>
+  <div id="lifetimeBody"></div>
+</section>
+
+<section class="payments-section" id="paymentsSection">
+  <div class="payments-head">
+    <h2>Payments Received</h2>
+    <p>A separate log of actual money received — which student paid, which month it covers, and the date it came in.</p>
+  </div>
+  <div class="add-payment-form" id="addPaymentForm">
+    <div class="pay-card">
+      <h4><span class="step">1</span>Who paid &amp; how much</h4>
+      <div class="field"><label>Student</label>
+        <select id="pStudent"></select>
+      </div>
+      <div class="field">
+        <label>Amount (Taka)</label>
+        <div class="money-input"><span>৳</span><input type="number" id="pAmount" min="0" step="1" placeholder="e.g. 5000"></div>
+      </div>
+      <div><button type="button" class="chip-btn" id="btnUseFee">Use fee</button></div>
+    </div>
+
+    <div class="pay-card">
+      <h4><span class="step">2</span>Month it covers</h4>
+      <div class="pay-grid">
+        <div class="field"><label>For month</label>
+          <select id="pForMonth">
+          <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+          <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+          <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+        <div class="field"><label>For year</label>
+          <select id="pForYear"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="pay-card">
+      <h4><span class="step">3</span>Date received <button type="button" class="chip-btn" id="btnRecToday">Today</button></h4>
+      <div class="pay-grid">
+        <div class="field"><label>Day</label>
+          <select id="pDay"></select>
+        </div>
+        <div class="field"><label>Month</label>
+          <select id="pRecMonth">
+          <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+          <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+          <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+        <div class="field"><label>Year</label>
+          <select id="pRecYear"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="pay-submit">
+      <div class="field"><label>Note (optional)</label>
+        <input type="text" id="pNote" placeholder="e.g. Paid via bKash">
+      </div>
+      <button class="btn-primary" id="btnAddPayment">+ Add Payment</button>
+    </div>
+  </div>
+  <div id="paymentsBody"></div>
+</section>
+</div>
+
+<div class="footer-bar">
+  <button class="btn-ghost btn-sm" id="btnExport">Export Backup (.json)</button>
+  <button class="btn-ghost btn-sm" id="btnImport">Import Backup</button>
+  <input type="file" id="fileImport" accept="application/json" class="hidden">
+</div>
+
+<!-- Add / Edit student modal -->
+<div class="overlay hidden" id="studentModalOverlay">
+  <div class="modal">
+    <h3 id="studentModalTitle">Add New Student</h3>
+
+    <div class="modal-section">Student</div>
+    <div class="field"><label>Student's Name</label><input type="text" id="fName" placeholder="Full name"></div>
+
+    <div class="two-col">
+      <div class="field"><label>Class</label><input type="text" id="fClass" placeholder="e.g. Grade 9"></div>
+      <div class="field"><label>Location</label><input type="text" id="fLocation" placeholder="Area / address"></div>
+    </div>
+
+    <div class="field">
+      <label>Subjects (separate with commas if more than one)</label>
+      <input type="text" id="fSubjects" placeholder="e.g. Physics, Chemistry, Higher Math">
+    </div>
+
+    <div class="modal-section">Schedule &amp; fee</div>
+    <div class="two-col">
+      <div class="field"><label>Days per week</label><input type="number" id="fDaysPerWeek" min="1" max="7" placeholder="e.g. 3"></div>
+      <div class="field"><label>Hours per session</label><input type="number" id="fHours" min="0" step="0.5" placeholder="e.g. 1.5"></div>
+    </div>
+
+    <div class="field">
+      <label>Fixed Fee (Taka)</label>
+      <input type="number" id="fFee" min="0" step="1" placeholder="e.g. 5000">
+    </div>
+
+    <div class="two-col">
+      <div class="field"><label>Transport Cost (per teaching day)</label><input type="number" id="fTransportCost" min="0" step="any" placeholder="e.g. 50"></div>
+      <div class="field"><label>Other Costs (per cycle)</label><input type="number" id="fOtherCosts" min="0" step="1" placeholder="e.g. 200"></div>
+    </div>
+    <div class="field">
+      <label>One-time cost — first cycle only (Taka)</label>
+      <input type="number" id="fFirstCost" min="0" step="1" placeholder="Leave empty if none">
+      <div class="hint-text">For example, the amount you pay whoever arranged this tuition. It is counted only in Cycle 1, and only if you enter an amount here.</div>
+      <div><button type="button" class="chip-btn" id="btnFill30">Fill 30% of fee</button></div>
+    </div>
+    <div class="field">
+      <div class="net-preview" id="netPreview"></div>
+      <div class="hint-text">Transport is charged per teaching day (per-day cost × days you actually taught in a cycle), so a cycle you leave early counts only the days taught. Other costs are per cycle.</div>
+    </div>
+
+    <div class="field">
+      <label>Default cycle length (new cycles)</label>
+      <select id="fCycleLength">
+        <option value="10">10 days</option>
+        <option value="11">11 days</option>
+        <option value="12">12 days</option>
+        <option value="13">13 days</option>
+        <option value="14">14 days</option>
+        <option value="15">15 days</option>
+        <option value="16">16 days</option>
+      </select>
+      <div class="hint-text">Used for new cycles going forward. Each individual cycle's length can also be changed on its own — from a dropdown right on that cycle's card — so one month can be 12 days, the next 13, the next 14, and so on.</div>
+    </div>
+
+    <div class="modal-section">Guardian</div>
+    <div class="two-col">
+      <div class="field"><label>Guardian's Phone Number</label><input type="tel" id="fGuardianPhone" placeholder="Mobile number"></div>
+      <div class="field"><label>Guardian's Name</label><input type="text" id="fGuardianName" placeholder="Guardian's name"></div>
+    </div>
+
+    <div class="field">
+      <label>Guardian's Detailed Address</label>
+      <textarea id="fGuardianDetails" rows="2" placeholder="Address or other details"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-ghost btn-sm" id="btnCancelStudent">Cancel</button>
+      <button class="btn-primary btn-sm" id="btnSaveStudent">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="detailOverlay">
+  <div class="detail-sheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="detail-head">
+      <div>
+        <h3 id="detailTitle"></h3>
+        <p id="detailSub"></p>
+      </div>
+      <button class="detail-close" id="btnCloseDetail" aria-label="Close">✕</button>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div><!-- /#appRoot -->
+
+<script>
+(function(){
+  const STORAGE_KEY = 'tuitionRegisterData';
+  const LOCK_KEY = 'tuitionRegisterLock_v1';
+
+  // Per-tab session state: survives a refresh, disappears when the tab/browser is closed.
+  const UNLOCK_KEY = 'tr_unlocked', PAGE_KEY = 'tr_page', STUDENT_KEY = 'tr_student', HIDDEN_KEY = 'tr_hiddenAt';
+  const REFRESH_GRACE_MS = 30000;   // away from the site for 30s or more → locked (also covers a reload after being away)
+  const TAB_LOCK_AFTER_MS = 30000;  // locks when you come back after being away for 30 seconds or more
+  function ssGet(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }
+  function ssSet(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){} }
+  function ssRemove(k){ try{ sessionStorage.removeItem(k); }catch(e){} }
+
+  function hashPin(str){
+    let h = 5381;
+    for(let i=0;i<str.length;i++){ h = ((h*33) ^ str.charCodeAt(i)) >>> 0; }
+    return h.toString(16);
+  }
+  function loadLock(){
+    try{ const raw = localStorage.getItem(LOCK_KEY); return raw ? JSON.parse(raw) : null; }
+    catch(e){ return null; }
+  }
+  function saveLockData(obj){ localStorage.setItem(LOCK_KEY, JSON.stringify(obj)); }
+  function showLockPanel(id){
+    document.querySelectorAll('.lock-panel').forEach(p=>p.classList.add('hidden'));
+    const panel = document.getElementById(id);
+    panel.classList.remove('hidden');
+    const first = panel.querySelector('input');
+    if(first) setTimeout(()=>{ if(!document.getElementById('lockScreen').classList.contains('hidden')) first.focus(); }, 30);
+  }
+  function setLockError(id, msg){ document.getElementById(id).textContent = msg||''; }
+  function unlockApp(){
+    ssSet(UNLOCK_KEY, '1');
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('appRoot').classList.remove('app-hidden');
+  }
+  function lockApp(){
+    ssRemove(UNLOCK_KEY);
+    closeDetail();
+    document.getElementById('appRoot').classList.add('app-hidden');
+    document.getElementById('lockScreen').classList.remove('hidden');
+    document.getElementById('lpLogin').value = '';
+    setLockError('lockLoginError','');
+    showLockPanel('lockLogin');
+  }
+  function initLock(){
+    const lock = loadLock();
+    const hiddenAt = Number(ssGet(HIDDEN_KEY)) || 0;
+    const wasAway = hiddenAt && (Date.now() - hiddenAt) >= REFRESH_GRACE_MS;
+    ssRemove(HIDDEN_KEY);
+    // A plain refresh keeps the session unlocked (same page, same student).
+    if(lock && ssGet(UNLOCK_KEY)==='1' && !wasAway){ unlockApp(); return; }
+    ssRemove(UNLOCK_KEY);
+    document.getElementById('appRoot').classList.add('app-hidden');
+    document.getElementById('lockScreen').classList.remove('hidden');
+    showLockPanel(lock ? 'lockLogin' : 'lockSetup');
+  }
+  // Lock when the person leaves the tab/site and comes back.
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState==='hidden'){
+      ssSet(HIDDEN_KEY, String(Date.now()));
+    }else{
+      const t = Number(ssGet(HIDDEN_KEY)) || 0;
+      ssRemove(HIDDEN_KEY);
+      const appOpen = !document.getElementById('appRoot').classList.contains('app-hidden');
+      if(t && appOpen && (Date.now()-t) >= TAB_LOCK_AFTER_MS) lockApp();
+    }
+  });
+  let data = load();
+  // On open, jump straight to the primary tuition if one is set (and still
+  // exists); otherwise fall back to the first active tuition, then anything.
+  let activeStudentId = (
+    data.students.find(s=>s.id===data.primaryStudentId) ||
+    data.students.find(s=>s.tuitionActive!==false) ||
+    data.students[0] ||
+    {}
+  ).id || null;
+  { const saved = ssGet(STUDENT_KEY); if(saved && data.students.some(s=>s.id===saved)) activeStudentId = saved; }
+  let editingStudentId = null;
+
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  // Older data stored transport as one amount per cycle. Convert it to a per-teaching-day amount
+  // (per-cycle amount ÷ the student's default cycle length) so a full cycle still costs exactly the same.
+  function normalizeStudent(s){
+    if(s.tuitionActive==null) s.tuitionActive = true;
+    if(s.transportPerDay==null){
+      const len = Number(s.cycleLength)||12;
+      s.transportPerDay = Number(s.transportCost||0) / len;
+    }
+  }
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        const parsed = JSON.parse(raw);
+        parsed.payments = parsed.payments || [];
+        parsed.primaryStudentId = parsed.primaryStudentId || null;
+        parsed.students.forEach(normalizeStudent);
+        return parsed;
+      }
+    }catch(e){ console.error('Could not read saved data', e); }
+    return { students: [], payments: [], primaryStudentId: null };
+  }
+  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function money(n){ n = Number(n)||0; return n.toLocaleString('en-US'); }
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._h);
+    toast._h = setTimeout(()=>t.classList.remove('show'), 2600);
+  }
+  function escapeHtml(str){
+    return String(str||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ---- date helpers: always day-month-year, both for input and display ----
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function fmtDate(y,m,d){ return `${pad2(d)}-${pad2(m)}-${y}`; }
+  function weekdayName(y,m,d){
+    const dt = new Date(y, m-1, d);
+    return dt.toLocaleDateString('en-US', {weekday:'long'});
+  }
+  function ts(y,m,d){ return new Date(y,m-1,d).getTime(); }
+  function isLeapYear(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+  function daysInMonth(y,m){
+    const lengths = [31, isLeapYear(y)?29:28, 31,30,31,30,31,31,30,31,30,31];
+    return lengths[m-1];
+  }
+  function fillYearSelect(sel, selected){
+    const cy = todayParts().y, pick = selected || cy;
+    const from = Math.min(cy-10, pick), to = Math.max(cy+10, pick);
+    let html = '';
+    for(let y=from; y<=to; y++) html += `<option value="${y}">${y}</option>`;
+    sel.innerHTML = html;
+    sel.value = pick;
+  }
+  function todayParts(){
+    const dt = new Date();
+    return { d: dt.getDate(), m: dt.getMonth()+1, y: dt.getFullYear() };
+  }
+
+  // Keeps the Day dropdown's option range in sync with the selected Month/Year,
+  // so it is impossible to select an invalid date like 30 February.
+  function refreshDayOptions(preserveDay, ids){
+    ids = ids || {day:'sDay', month:'sMonth', year:'sYear'};
+    const daySel = document.getElementById(ids.day);
+    const monthSel = document.getElementById(ids.month);
+    const yearInput = document.getElementById(ids.year);
+    if(!daySel || !monthSel || !yearInput) return;
+    const m = Number(monthSel.value)||1;
+    const y = Number(yearInput.value)||todayParts().y;
+    const max = daysInMonth(y,m);
+    const wanted = preserveDay!=null ? preserveDay : Number(daySel.value)||1;
+    const clamped = Math.min(wanted, max);
+    daySel.innerHTML = Array.from({length:max},(_,i)=>i+1).map(d=>`<option value="${d}">${d}</option>`).join('');
+    daySel.value = clamped;
+  }
+
+  // ---- cycle logic ----
+  function sortedSessions(student){
+    return [...student.sessions].sort((a,b)=>ts(a.y,a.m,a.d)-ts(b.y,b.m,b.d));
+  }
+  const CYCLE_LENGTH_OPTIONS = Array.from({length:11},(_,i)=>i+10); // 10–20 days
+
+  // Each cycle's length can be set individually (e.g. Cycle 1 = 12 days,
+  // Cycle 2 = 13 days, Cycle 3 = 14 days...). student.cycleLengths[i] holds an
+  // explicit override for cycle i+1; cycles without one fall back to the
+  // student's default cycleLength.
+  function cycleLenFor(student, cycleIndex){
+    const lens = student.cycleLengths || [];
+    return lens[cycleIndex] || student.cycleLength || 12;
+  }
+  function buildCycles(student){
+    const sess = sortedSessions(student);
+    const cycles = [];
+    let idx = 0, cycleIndex = 0;
+    while(idx < sess.length){
+      const len = cycleLenFor(student, cycleIndex);
+      const chunk = sess.slice(idx, idx+len);
+      const number = cycleIndex+1;
+      cycles.push({
+        number,
+        sessions: chunk,
+        complete: chunk.length===len,
+        length: len,
+        collected: (student.collectedCycles||[]).includes(number)
+      });
+      idx += len;
+      cycleIndex++;
+    }
+    return cycles;
+  }
+  // Freezes each existing cycle's current length as an explicit override, so
+  // changing the student's default going forward only affects new cycles.
+  function lockInExistingCycleLengths(student){
+    const cycles = buildCycles(student);
+    student.cycleLengths = student.cycleLengths || [];
+    cycles.forEach((c,i)=>{
+      if(student.cycleLengths[i]==null) student.cycleLengths[i] = c.length;
+    });
+  }
+  // Changes one specific cycle's length. If later cycles already have fee
+  // marked as collected, warn first — since shifting this cycle's boundary
+  // reshuffles which days fall into every cycle after it.
+  function setCycleLength(student, cycleNumber, newLen){
+    const affectsCollected = (student.collectedCycles||[]).some(n=>n>=cycleNumber);
+    if(affectsCollected){
+      const ok = confirm(`Changing Cycle ${cycleNumber}'s length will shift the days in that cycle and every cycle after it, so "Fee Collected" marks for Cycle ${cycleNumber} onward will be cleared. Continue?`);
+      if(!ok) return;
+      student.collectedCycles = (student.collectedCycles||[]).filter(n=>n<cycleNumber);
+    }
+    student.cycleLengths = student.cycleLengths || [];
+    student.cycleLengths[cycleNumber-1] = newLen;
+    save();
+    renderAll();
+    toast(`Cycle ${cycleNumber} set to ${newLen} days.`);
+  }
+  function studentStatus(student){
+    const cycles = buildCycles(student);
+    const anyDue = cycles.some(c=>c.complete && !c.collected);
+    return anyDue ? 'due' : 'clear';
+  }
+
+  // Transport is charged per teaching day: cost = per-day amount x days actually taught.
+  function perDay(s){ return Number(s.transportPerDay||0); }
+  // Expected net income for one FULL cycle at the student's default length.
+  function netIncome(student){
+    return Number(student.fee||0) - perDay(student)*(Number(student.cycleLength)||12) - Number(student.otherCosts||0);
+  }
+
+  function activeStudents(){ return data.students.filter(s=>s.tuitionActive!==false); }
+
+  // One-time cost (e.g. the fee paid to whoever arranged the tuition): counts in Cycle 1 only,
+  // and only when an amount was entered.
+  function firstCost(s){ return Number(s.firstCycleCost||0); }
+  // Expected net for a full cycle (uses that cycle's own length); the one-time cost applies to Cycle 1 only.
+  function cycleNet(s, cycleNumber){
+    const len = cycleLenFor(s, cycleNumber-1);
+    return Number(s.fee||0) - perDay(s)*len - Number(s.otherCosts||0) - (cycleNumber===1 ? firstCost(s) : 0);
+  }
+  // Costs actually incurred so far in a cycle (for a cycle that is not finished).
+  function cycleCostSoFar(s, c){
+    return perDay(s)*c.sessions.length + Number(s.otherCosts||0) + (c.number===1 ? firstCost(s) : 0);
+  }
+  // The cycle the tuition is "in" right now: the latest cycle, or the next one once the latest is complete and collected.
+  function currentCycleNumber(s){
+    const cycles = buildCycles(s);
+    if(cycles.length===0) return 1;
+    const last = cycles[cycles.length-1];
+    return (last.complete && last.collected) ? last.number+1 : last.number;
+  }
+
+  function renderStats(){
+    const el = document.getElementById('statsRow');
+    const total = data.students.length;
+    const active = activeStudents();
+    const life = lifetimeTotals();
+    const received = life.received;
+    // Active earning = fee minus running costs, for ongoing tuitions only.
+    const activeEarning = active.reduce((sum,s)=>sum+cycleNet(s,currentCycleNumber(s)),0);
+    const svg = (d)=>`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+    const icoBook = svg('<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>');
+    const icoUser = svg('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16.5 11 2 2 3.5-4"/>');
+    const taka = '<span class="ico" aria-hidden="true">\u09F3</span>';
+    const stat = (icon, num, label, sub)=>`<div class="stat">${icon}<div class="txt"><div class="num">${num}</div><div class="lbl">${label}</div>${sub?`<div class="sub">${sub}</div>`:''}</div></div>`;
+    el.innerHTML = `
+      <div class="stat-group">
+        <span class="group-tag">All Time</span>
+        ${stat(`<span class="ico">${icoBook}</span>`, total, 'Total Tuitions')}
+        <div class="divider"></div>
+        ${stat(taka, '\u09F3'+money(received), 'Total Income', 'Net \u09F3'+money(life.net)+' after expenses')}
+      </div>
+      <div class="stat-group">
+        <span class="group-tag">Active Now</span>
+        ${stat(`<span class="ico">${icoUser}</span>`, active.length, 'Active Tuitions')}
+        <div class="divider"></div>
+        ${stat(taka, '\u09F3'+money(activeEarning), 'Active Earning')}
+      </div>
+    `;
+  }
+
+  function renderNetIncome(){
+    const el = document.getElementById('netIncomeBody');
+    const active = activeStudents();
+    if(data.students.length===0){
+      el.innerHTML = `<div class="empty-block">Add a student to see net income calculated automatically here.</div>`;
+      return;
+    }
+    if(active.length===0){
+      el.innerHTML = `<div class="empty-block">No active tuitions right now, so there is no monthly income to show.</div>`;
+      return;
+    }
+    const tk = '\u09F3';
+    const calc = active.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(s=>{
+      const cur = currentCycleNumber(s);
+      const one = cur===1 ? firstCost(s) : 0;
+      const len = cycleLenFor(s, cur-1);
+      return { s, cur, one, len, transport: perDay(s)*len, net: cycleNet(s,cur) };
+    });
+    const rows = calc.map(({s,cur,one,len,transport,net})=>`
+        <tr>
+          <td class="name">${escapeHtml(s.name)}<div class="subtle">Cycle ${cur}</div></td>
+          <td class="mono-cell">${tk}${money(s.fee)}</td>
+          <td class="mono-cell">${tk}${money(transport)}<div class="subtle">${tk}${money(perDay(s))} × ${len} days</div></td>
+          <td class="mono-cell">${tk}${money(s.otherCosts)}</td>
+          <td class="mono-cell">${one>0 ? tk+money(one) : '<span class="dash">\u2014</span>'}</td>
+          <td class="net${net<0?' negative':''}">${tk}${money(net)}<div class="share" title="Share of the fee you keep"><i style="width:${Number(s.fee)>0 ? Math.max(0,Math.min(100,Math.round(net/Number(s.fee)*100))) : 0}%"></i></div></td>
+        </tr>`).join('');
+
+    const sum = (fn)=>calc.reduce((t,x)=>t+fn(x),0);
+    const totalNet = sum(x=>x.net);
+    el.innerHTML = `
+      <div class="table-scroll">
+      <table class="net-income-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Fee (per cycle)</th>
+            <th>Transport cost</th>
+            <th>Other costs</th>
+            <th>One-time cost</th>
+            <th>Net income</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr>
+            <td>Total (active, current cycle)</td>
+            <td>${tk}${money(sum(x=>Number(x.s.fee||0)))}</td>
+            <td>${tk}${money(sum(x=>x.transport))}</td>
+            <td>${tk}${money(sum(x=>Number(x.s.otherCosts||0)))}</td>
+            <td>${tk}${money(sum(x=>x.one))}</td>
+            <td class="net${totalNet<0?' negative':''}">${tk}${money(totalNet)}</td>
+          </tr>
+        </tfoot>
+      </table>
+      </div>
+    `;
+  }
+
+  // Cost of every cycle you have started teaching, one row per cycle.
+  function studentExpenseBreakdown(s){
+    const rows = buildCycles(s).map(c=>{
+      const transport = perDay(s) * c.sessions.length, other = Number(s.otherCosts||0);
+      const one = c.number===1 ? firstCost(s) : 0;
+      const first = c.sessions[0], last = c.sessions[c.sessions.length-1];
+      return { number:c.number, from:fmtDate(first.y,first.m,first.d), to:fmtDate(last.y,last.m,last.d),
+               days:c.sessions.length, len:c.length, perDay:perDay(s), transport, other, one, total:transport+other+one };
+    });
+    const sum = k=>rows.reduce((t,r)=>t+r[k],0);
+    return { rows, transport:sum('transport'), other:sum('other'), one:sum('one'), total:sum('total') };
+  }
+
+  // All-time totals across every tuition (active and ended).
+  //  - Received = the actual money logged in "Payments Received".
+  //  - Expenses = transport + other costs for every cycle you have started teaching, plus the
+  //    one-time cost once (it belongs to Cycle 1).
+  //  - Net = Received - Expenses.
+  function lifetimeTotals(){
+    let expenses = 0, marks = 0;
+    data.students.forEach(s=>{
+      expenses += studentExpenseBreakdown(s).total;
+      marks += (s.collectedCycles||[]).length * Number(s.fee||0);
+    });
+    const received = (data.payments||[]).reduce((t,p)=>t+Number(p.amount||0),0);
+    return { received, expenses, net: received - expenses, marks };
+  }
+
+  function renderLifetime(){
+    const el = document.getElementById('lifetimeBody');
+    if(data.students.length===0){ el.innerHTML = ''; return; }
+    const L = lifetimeTotals();
+    const tk = '\u09F3';
+    const mismatch = L.marks !== L.received;
+    el.innerHTML = `
+      <div class="lifetime">
+        <h3>All-time earnings <small>money actually received − expenses of every cycle started</small></h3>
+        <div class="payments-summary">
+          <button type="button" class="cell link" data-detail="received"><div class="k">Total received</div><div class="v">${tk}${money(L.received)}</div><div class="more">View details ›</div></button>
+          <button type="button" class="cell link" data-detail="expenses"><div class="k">Gross expenses</div><div class="v">${tk}${money(L.expenses)}</div><div class="more">View details ›</div></button>
+          <div class="cell"><div class="k">Net earning</div><div class="v${L.net<0?' negative':''}">${tk}${money(L.net)}</div></div>
+        </div>
+        ${mismatch ? `<div class="lifetime-note">Note: cycles marked “Fee Collected” add up to ${tk}${money(L.marks)} at the current fees, but the payments you logged add up to ${tk}${money(L.received)}. Earnings use the logged payments, since that is the money you actually received.</div>` : ''}
+      </div>`;
+    el.querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click', ()=>openDetail(b.dataset.detail)));
+  }
+
+  // ---- detail sheets (opened from the all-time earnings cells) ----
+  function statusTag(s){ return s.tuitionActive===false ? '<span class="stamp ended">Ended</span>' : '<span class="stamp clear">Active</span>'; }
+  function receivedDetailHtml(){
+    const tk = '৳';
+    const payments = data.payments || [];
+    const byDate = (a,b)=>ts(b.y,b.m,b.d)-ts(a.y,a.m,a.d);
+    const sumOf = list=>list.reduce((t,p)=>t+Number(p.amount||0),0);
+    const groups = data.students.slice().sort((a,b)=>a.name.localeCompare(b.name))
+      .map(s=>({ name:s.name, tag:statusTag(s), list:payments.filter(p=>p.studentId===s.id).sort(byDate) }));
+    const orphans = payments.filter(p=>!data.students.some(s=>s.id===p.studentId)).sort(byDate);
+    if(orphans.length) groups.push({ name:'(removed student)', tag:'', list:orphans });
+    const sections = groups.map(g=>{
+      if(!g.list.length){
+        return `<section class="dgroup"><div class="dgroup-head"><div class="dname">${escapeHtml(g.name)} ${g.tag}</div><div class="dtotal muted">No payments logged yet</div></div></section>`;
+      }
+      const rows = g.list.map(p=>`
+        <tr>
+          <td>${fmtDate(p.y,p.m,p.d)}</td>
+          <td><span class="month-pill">${MONTHS[(p.forMonth||1)-1]} ${p.forYear||''}</span></td>
+          <td class="r amt">${tk}${money(p.amount)}</td>
+          <td class="wrap">${escapeHtml(p.note||'—')}</td>
+        </tr>`).join('');
+      return `<section class="dgroup">
+        <div class="dgroup-head"><div class="dname">${escapeHtml(g.name)} ${g.tag}</div><div class="dtotal">${g.list.length} payment${g.list.length===1?'':'s'} · ${tk}${money(sumOf(g.list))}</div></div>
+        <div class="table-scroll"><table class="detail-table">
+          <thead><tr><th>Received on</th><th>Month taught for</th><th class="r">Amount</th><th>Note</th></tr></thead>
+          <tbody>${rows}</tbody>
+          <tfoot><tr><td colspan="2">Subtotal</td><td class="r amt">${tk}${money(sumOf(g.list))}</td><td></td></tr></tfoot>
+        </table></div>
+      </section>`;
+    }).join('');
+    return `
+      <div class="payments-summary">
+        <div class="cell"><div class="k">Total received</div><div class="v">${tk}${money(sumOf(payments))}</div></div>
+        <div class="cell"><div class="k">Payments logged</div><div class="v">${payments.length}</div></div>
+        <div class="cell"><div class="k">Tuitions paid by</div><div class="v">${groups.filter(g=>g.list.length).length} of ${groups.length}</div></div>
+      </div>
+      ${sections || '<div class="empty-block">No tuitions added yet.</div>'}`;
+  }
+  function expensesDetailHtml(){
+    const tk = '৳';
+    const students = data.students.slice().sort((a,b)=>a.name.localeCompare(b.name));
+    const info = students.map(s=>({ s, b:studentExpenseBreakdown(s) }));
+    const tot = k=>info.reduce((t,x)=>t+x.b[k],0);
+    const sections = info.map(({s,b})=>{
+      if(b.rows.length===0){
+        return `<section class="dgroup"><div class="dgroup-head"><div class="dname">${escapeHtml(s.name)} ${statusTag(s)}</div><div class="dtotal muted">No cycle started — no expenses yet</div></div></section>`;
+      }
+      const rows = b.rows.map(r=>`
+        <tr>
+          <td>Cycle ${r.number}</td>
+          <td class="wrap">${r.from} → ${r.to}</td>
+          <td class="r">${r.days} / ${r.len}</td>
+          <td class="r">${tk}${money(r.transport)}<div class="subtle">${r.days} d × ${tk}${money(r.perDay)}</div></td>
+          <td class="r">${tk}${money(r.other)}</td>
+          <td class="r">${r.one>0 ? tk+money(r.one) : '<span class="dash">—</span>'}</td>
+          <td class="r amt">${tk}${money(r.total)}</td>
+        </tr>`).join('');
+      return `<section class="dgroup">
+        <div class="dgroup-head"><div class="dname">${escapeHtml(s.name)} ${statusTag(s)}</div><div class="dtotal">${b.rows.length} cycle${b.rows.length===1?'':'s'} · ${tk}${money(b.total)}</div></div>
+        <div class="table-scroll"><table class="detail-table">
+          <thead><tr><th>Cycle</th><th>Period</th><th class="r">Days taught</th><th class="r">Transport</th><th class="r">Other costs</th><th class="r">One-time</th><th class="r">Cycle total</th></tr></thead>
+          <tbody>${rows}</tbody>
+          <tfoot><tr><td colspan="3">Subtotal</td><td class="r">${tk}${money(b.transport)}</td><td class="r">${tk}${money(b.other)}</td><td class="r">${tk}${money(b.one)}</td><td class="r amt">${tk}${money(b.total)}</td></tr></tfoot>
+        </table></div>
+      </section>`;
+    }).join('');
+    return `
+      <div class="payments-summary">
+        <div class="cell"><div class="k">Gross expenses</div><div class="v">${tk}${money(tot('total'))}</div></div>
+        <div class="cell"><div class="k">Transport</div><div class="v">${tk}${money(tot('transport'))}</div></div>
+        <div class="cell"><div class="k">Other costs</div><div class="v">${tk}${money(tot('other'))}</div></div>
+        <div class="cell"><div class="k">One-time costs</div><div class="v">${tk}${money(tot('one'))}</div></div>
+      </div>
+      ${sections || '<div class="empty-block">No tuitions added yet.</div>'}`;
+  }
+  function openDetail(kind){
+    const isRecv = kind==='received';
+    document.getElementById('detailTitle').textContent = isRecv ? 'Money received' : 'Gross expenses';
+    document.getElementById('detailSub').textContent = isRecv
+      ? 'Every payment you logged, grouped by tuition.'
+      : 'What each tuition cost you, cycle by cycle — transport, other costs and one-time costs.';
+    const body = document.getElementById('detailBody');
+    body.innerHTML = isRecv ? receivedDetailHtml() : expensesDetailHtml();
+    document.getElementById('detailOverlay').classList.remove('hidden');
+    body.scrollTop = 0;
+  }
+  function closeDetail(){
+    const o = document.getElementById('detailOverlay');
+    if(o) o.classList.add('hidden');
+  }
+  document.getElementById('btnCloseDetail').addEventListener('click', closeDetail);
+  document.getElementById('detailOverlay').addEventListener('click', (e)=>{ if(e.target.id==='detailOverlay') closeDetail(); });
+
+  let paymentFormReady = false, pStudentTouched = false;
+  // "Use fee" chip: fills the amount with the selected student's fee in one tap.
+  function updateFeeChip(){
+    const btn = document.getElementById('btnUseFee');
+    const s = data.students.find(x=>x.id===document.getElementById('pStudent').value);
+    const fee = s ? Number(s.fee||0) : 0;
+    btn.disabled = !fee;
+    btn.textContent = fee ? `Use fee \u09F3${money(fee)}` : 'Use fee';
+  }
+  function renderPayments(){
+    // student dropdown: primary tuition first, then active, then ended
+    const studentSel = document.getElementById('pStudent');
+    const rank = s => s.id===data.primaryStudentId ? 0 : (s.tuitionActive!==false ? 1 : 2);
+    const sortedStudents = data.students.slice().sort((a,b)=> (rank(a)-rank(b)) || a.name.localeCompare(b.name));
+    const prevChoice = studentSel.value;
+    studentSel.innerHTML = sortedStudents.length===0
+      ? `<option value="">Add a student first</option>`
+      : sortedStudents.map(s=>`<option value="${s.id}">${s.id===data.primaryStudentId?'★ ':''}${escapeHtml(s.name)}${s.tuitionActive===false?' (ended)':''}</option>`).join('');
+    // Default to the primary tuition; keep a manual choice once the person has made one.
+    if(sortedStudents.length>0){
+      const keep = pStudentTouched && sortedStudents.some(s=>s.id===prevChoice);
+      studentSel.value = keep ? prevChoice : sortedStudents[0].id;
+    }
+    updateFeeChip();
+
+    // date dropdowns: set to today only the first time, so later re-renders never wipe the person's selection
+    if(!paymentFormReady){
+      const t = todayParts();
+      fillYearSelect(document.getElementById('pForYear'), t.y);
+      fillYearSelect(document.getElementById('pRecYear'), t.y);
+      document.getElementById('pForMonth').value = t.m;
+      document.getElementById('pRecMonth').value = t.m;
+      refreshDayOptions(t.d, {day:'pDay', month:'pRecMonth', year:'pRecYear'});
+      paymentFormReady = true;
+    }
+
+    // table + summary
+    const el = document.getElementById('paymentsBody');
+    const payments = (data.payments||[]).slice().sort((a,b)=>ts(b.y,b.m,b.d)-ts(a.y,a.m,a.d));
+    const studentName = (id)=>{ const s = data.students.find(s=>s.id===id); return s ? s.name : '(removed student)'; };
+
+    if(payments.length===0){
+      el.innerHTML = `<div class="empty-block">No payments logged yet. Add the first one above.</div>`;
+    }else{
+      const rows = payments.map(p=>`
+        <tr>
+          <td>${fmtDate(p.y,p.m,p.d)}</td>
+          <td>${escapeHtml(studentName(p.studentId))}</td>
+          <td><span class="month-pill">${MONTHS[(p.forMonth||1)-1]} ${p.forYear||''}</span></td>
+          <td class="amt">${'\u09F3'}${money(p.amount)}</td>
+          <td>${escapeHtml(p.note||'—')}</td>
+          <td><button class="del" data-del-payment="${p.id}" title="Delete">✕</button></td>
+        </tr>`).join('');
+      const total = payments.reduce((sum,p)=>sum+Number(p.amount||0),0);
+      const now = todayParts();
+      const thisMonth = payments.filter(p=>p.m===now.m && p.y===now.y).reduce((sum,p)=>sum+Number(p.amount||0),0);
+      el.innerHTML = `
+        <div class="payments-summary">
+          <div class="cell"><div class="k">Total received</div><div class="v">${'\u09F3'}${money(total)}</div></div>
+          <div class="cell"><div class="k">Payments logged</div><div class="v">${payments.length}</div></div>
+          <div class="cell"><div class="k">Received this month</div><div class="v">${'\u09F3'}${money(thisMonth)}</div></div>
+        </div>
+        <div class="table-scroll">
+        <table class="payments-table">
+          <thead>
+            <tr><th>Received on</th><th>Student</th><th>For month</th><th>Amount</th><th>Note</th><th></th></tr>
+          </thead>
+          <tbody>${rows}</tbody>
+          <tfoot>
+            <tr><td colspan="3">Total received</td><td class="amt">${'\u09F3'}${money(total)}</td><td colspan="2"></td></tr>
+          </tfoot>
+        </table>
+        </div>
+      `;
+      el.querySelectorAll('[data-del-payment]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          data.payments = data.payments.filter(p=>p.id!==btn.dataset.delPayment);
+          save(); renderPayments();
+          toast('Payment entry removed.');
+        });
+      });
+    }
+  }
+
+  function addPayment(){
+    const studentId = document.getElementById('pStudent').value;
+    if(!studentId){ toast('Add a student first.'); return; }
+    const amount = Number(document.getElementById('pAmount').value)||0;
+    if(amount<=0){ toast('Enter a valid amount received.'); return; }
+    const forMonth = Number(document.getElementById('pForMonth').value);
+    const forYear = Number(document.getElementById('pForYear').value);
+    const d = Number(document.getElementById('pDay').value);
+    const m = Number(document.getElementById('pRecMonth').value);
+    const y = Number(document.getElementById('pRecYear').value);
+    if(!forYear || forYear<2000 || forYear>2100){ toast('Please enter a valid "for year".'); return; }
+    if(!y || y<2000 || y>2100){ toast('Please enter a valid year received.'); return; }
+    if(d<1 || d>daysInMonth(y,m)){ toast(`${MONTHS[m-1]} ${y} does not have a day ${d}.`); return; }
+    const note = document.getElementById('pNote').value.trim();
+    data.payments = data.payments || [];
+    data.payments.push({ id:uid(), studentId, amount, forMonth, forYear, d, m, y, note });
+    save();
+    toast('Payment recorded.');
+    document.getElementById('pAmount').value = '';
+    document.getElementById('pNote').value = '';
+    renderPayments();
+  }
+
+  function renderStudentList(){
+    const listEl = document.getElementById('studentList');
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const students = data.students
+      .filter(s => !q || s.name.toLowerCase().includes(q) || (s.studentClass||'').toLowerCase().includes(q) || (s.subjects||[]).join(' ').toLowerCase().includes(q))
+      .sort((a,b)=>{
+        // Primary tuition first, then active tuitions, then ended ones — each group alphabetical.
+        const rank = s => s.id===data.primaryStudentId ? 0 : (s.tuitionActive!==false ? 1 : 2);
+        const r = rank(a)-rank(b);
+        return r!==0 ? r : a.name.localeCompare(b.name);
+      });
+
+    if(students.length===0){
+      listEl.innerHTML = `<div class="empty-sidebar">${data.students.length===0 ? 'No students added yet.' : 'No matches found.'}</div>`;
+      return;
+    }
+    listEl.innerHTML = students.map(s=>{
+      const status = studentStatus(s);
+      const isPrimary = s.id===data.primaryStudentId;
+      const isEnded = s.tuitionActive===false;
+      return `
+      <div class="student-card ${s.id===activeStudentId?'active':''} ${isEnded?'ended':''}" data-id="${s.id}">
+        <div class="name">${isPrimary?'<span class="star">★</span>':''}${escapeHtml(s.name)}</div>
+        <div class="meta">${escapeHtml(s.studentClass||'—')} · ${(s.subjects||[]).slice(0,2).join(', ')||'—'}</div>
+        <div class="row">
+          ${isEnded
+            ? `<span class="stamp ended">Ended</span>`
+            : `<span class="stamp ${status}">${status==='due'?'Fee Due':'Up to Date'}</span>`
+          }
+          ${isPrimary ? `<span class="stamp primary">★ Primary</span>` : ''}
+          <span class="mono" style="font-size:11px;color:#5c6b62;">${'\u09F3'}${money(s.fee)}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    listEl.querySelectorAll('.student-card').forEach(card=>{
+      card.addEventListener('click', ()=>{ activeStudentId = card.dataset.id; renderAll(); });
+    });
+  }
+
+  // Teaching-day tiles for one cycle, plus dashed placeholders for the days still to come.
+  function sessionTiles(c){
+    const t = todayParts();
+    let html = c.sessions.map((sess,i)=>{
+      const isToday = sess.y===t.y && sess.m===t.m && sess.d===t.d;
+      return `<div class="session-item${isToday?' today':''}">
+        <span class="idx">${i+1}</span>
+        <div class="d-big">${pad2(sess.d)}</div>
+        <div class="d-meta">${MONTHS[sess.m-1].slice(0,3)} ${sess.y}</div>
+        <div class="w">${weekdayName(sess.y,sess.m,sess.d)}</div>
+        <button class="del" data-del-session="${sess.id}" title="Delete" aria-label="Delete teaching day">\u2715</button>
+      </div>`;
+    }).join('');
+    for(let i=c.sessions.length; i<c.length; i++){
+      html += `<div class="session-item empty"><span class="idx">${i+1}</span><div class="d-big">\u2013</div><div class="w">Pending</div></div>`;
+    }
+    return html;
+  }
+
+  const ICO = {
+    star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    power:'<path d="M12 3v9"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/>',
+    replay:'<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/>',
+    trash:'<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/>'
+  };
+  function ico(d, filled){
+    return `<svg width="14" height="14" viewBox="0 0 24 24" fill="${filled?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  }
+
+  function renderMain(){
+    const main = document.getElementById('mainPanel');
+    const student = data.students.find(s=>s.id===activeStudentId);
+    if(!student){
+      main.innerHTML = `<div class="placeholder"><h2>No student selected</h2><p>Choose a student from the list on the left, or add a new student to start tracking.</p></div>`;
+      return;
+    }
+    const status = studentStatus(student);
+    const cycles = buildCycles(student).slice().reverse(); // latest cycle on top; sessions within a cycle stay ascending
+
+    main.innerHTML = `
+      <div class="student-header">
+        <div style="flex:1;min-width:260px;">
+          <h2>${escapeHtml(student.name)}
+            ${student.tuitionActive===false ? `<span class="stamp ended">Ended</span>` : `<span class="stamp ${status}">${status==='due'?'Fee Due':'Up to Date'}</span>`}
+            ${student.id===data.primaryStudentId ? `<span class="stamp primary">★ Primary</span>` : ''}
+          </h2>
+          <div class="meta-line"><b>Class:</b> ${escapeHtml(student.studentClass||'—')} &nbsp;·&nbsp; <b>Location:</b> ${escapeHtml(student.location||'—')}</div>
+          <div style="margin-top:6px;">${(student.subjects||[]).map(sub=>`<span class="chip">${escapeHtml(sub)}</span>`).join('')||'<span class="hint-text">No subjects added</span>'}</div>
+          <div class="info-grid">
+            <div class="item"><div class="k">Fee</div><div class="v">${'\u09F3'}${money(student.fee)}</div></div>
+            ${firstCost(student)>0 ? `<div class="item"><div class="k">One-time cost (Cycle 1)</div><div class="v">${'\u09F3'}${money(firstCost(student))}</div></div>` : ''}
+            <div class="item"><div class="k">Transport / day</div><div class="v">${'\u09F3'}${money(perDay(student))}</div></div>
+            <div class="item"><div class="k">Per week</div><div class="v">${student.daysPerWeek||'—'} days</div></div>
+            <div class="item"><div class="k">Per session</div><div class="v">${student.hoursPerSession||'—'} hrs</div></div>
+            <div class="item"><div class="k">Tuition month</div><div class="v">default ${student.cycleLength} days</div></div>
+            <div class="item"><div class="k">Guardian</div><div class="v">${escapeHtml(student.guardianName||'—')}</div></div>
+            <div class="item"><div class="k">Guardian's phone</div><div class="v">${escapeHtml(student.guardianPhone||'—')}</div></div>
+          </div>
+          ${student.guardianDetails ? `<div class="meta-line" style="margin-top:6px;">${escapeHtml(student.guardianDetails)}</div>` : ''}
+        </div>
+        <div class="actions">
+          ${student.tuitionActive!==false
+            ? (student.id===data.primaryStudentId
+                ? `<button class="act-btn act-primary on" id="btnUnsetPrimary" title="Click to unset">${ico(ICO.star,true)}Primary</button>`
+                : `<button class="act-btn act-primary" id="btnSetPrimary">${ico(ICO.star)}Set as Primary</button>`)
+            : ''
+          }
+          ${student.tuitionActive===false
+            ? `<button class="act-btn act-react" id="btnToggleActive">${ico(ICO.replay)}Reactivate</button>`
+            : `<button class="act-btn act-end" id="btnToggleActive">${ico(ICO.power)}End Tuition</button>`
+          }
+          <button class="act-btn act-edit" id="btnEditStudent">${ico(ICO.edit)}Edit</button>
+          <button class="act-btn act-del" id="btnDeleteStudent">${ico(ICO.trash)}Delete</button>
+        </div>
+      </div>
+
+      <div class="add-session-form">
+        <div class="form-title">Add a teaching day <small>Pick a date, or tap “Add Today”.</small></div>
+        <div class="field"><label>Day</label>
+          <select id="sDay"></select>
+        </div>
+        <div class="field"><label>Month</label>
+          <select id="sMonth">${MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('')}</select>
+        </div>
+        <div class="field"><label>Year</label><select id="sYear"></select></div>
+        <div class="btn-row">
+          <button class="btn-primary btn-sm" id="btnAddSession">+ Add Teaching Day</button>
+          <button class="btn-ghost btn-sm" id="btnAddToday">+ Add Today</button>
+        </div>
+      </div>
+
+      <div id="cyclesWrap">
+        ${cycles.length===0 ? `<div class="empty-block">No teaching days added yet. Add the first one above.</div>` :
+          cycles.map(c=>`
+            <div class="cycle-block ${c.complete ? (c.collected ? 'is-collected' : 'is-due') : 'is-progress'}">
+              <div class="cycle-head">
+                <div class="cycle-left">
+                  <span class="cycle-num">${c.number}</span>
+                  <div>
+                    <div class="title">Cycle ${c.number}
+                      <select class="cycle-len-select" data-cycle-number="${c.number}" title="Days in this cycle">
+                        ${CYCLE_LENGTH_OPTIONS.map(n=>`<option value="${n}" ${n===c.length?'selected':''}>${n} days</option>`).join('')}
+                      </select>
+                    </div>
+                    <div class="range">${fmtDate(c.sessions[0].y,c.sessions[0].m,c.sessions[0].d)} → ${fmtDate(c.sessions[c.sessions.length-1].y,c.sessions[c.sessions.length-1].m,c.sessions[c.sessions.length-1].d)}</div>
+                    <div class="range">${c.complete
+                      ? `Net ${'\u09F3'}${money(cycleNet(student,c.number))}${c.number===1 && firstCost(student)>0 ? ` · after ${'\u09F3'}${money(firstCost(student))} one-time cost` : ''}`
+                      : `Costs so far ${'\u09F3'}${money(cycleCostSoFar(student,c))} · ${c.sessions.length} day${c.sessions.length===1?'':'s'} × ${'\u09F3'}${money(perDay(student))} transport`}</div>
+                  </div>
+                </div>
+                <div class="cycle-mid">
+                  <div class="pbar"><i style="width:${Math.round(c.sessions.length/c.length*100)}%"></i></div>
+                  <div class="progress">${c.sessions.length} / ${c.length} days completed</div>
+                </div>
+                <div class="actions">
+                  ${c.complete
+                    ? (c.collected
+                        ? `<span class="badge-collected">Fee Collected</span>`
+                        : `<span class="badge-due">Fee Due</span><button class="btn-ghost btn-sm" data-mark-collected="${c.number}">Mark as Collected</button>`)
+                    : `<span class="badge-progress">In Progress</span>`
+                  }
+                </div>
+              </div>
+              <div class="session-list">${sessionTiles(c)}</div>
+            </div>
+          `).join('')
+        }
+      </div>
+    `;
+
+    const t = todayParts();
+    fillYearSelect(document.getElementById('sYear'), t.y);
+    document.getElementById('sMonth').value = t.m;
+    refreshDayOptions(t.d);
+
+    document.getElementById('sMonth').addEventListener('change', ()=>refreshDayOptions());
+    document.getElementById('sYear').addEventListener('change', ()=>refreshDayOptions());
+
+    document.getElementById('btnEditStudent').addEventListener('click', ()=>openStudentModal(student));
+    document.getElementById('btnDeleteStudent').addEventListener('click', ()=>deleteStudent(student.id));
+    const btnSetPrimary = document.getElementById('btnSetPrimary');
+    if(btnSetPrimary) btnSetPrimary.addEventListener('click', ()=>setPrimaryStudent(student.id));
+    const btnUnsetPrimary = document.getElementById('btnUnsetPrimary');
+    if(btnUnsetPrimary) btnUnsetPrimary.addEventListener('click', ()=>setPrimaryStudent(null));
+    document.getElementById('btnToggleActive').addEventListener('click', ()=>toggleTuitionActive(student.id));
+    document.getElementById('btnAddSession').addEventListener('click', ()=>addSession(student.id));
+    document.getElementById('btnAddToday').addEventListener('click', ()=>addSession(student.id, todayParts()));
+    main.querySelectorAll('[data-del-session]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        student.sessions = student.sessions.filter(s=>s.id!==btn.dataset.delSession);
+        save(); renderAll();
+        toast('Teaching day removed.');
+      });
+    });
+    main.querySelectorAll('[data-mark-collected]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const n = Number(btn.dataset.markCollected);
+        student.collectedCycles = student.collectedCycles || [];
+        if(!student.collectedCycles.includes(n)) student.collectedCycles.push(n);
+        save(); renderAll();
+        toast(`Cycle ${n} marked as fee collected.`);
+      });
+    });
+    main.querySelectorAll('.cycle-len-select').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        setCycleLength(student, Number(sel.dataset.cycleNumber), Number(sel.value));
+      });
+    });
+  }
+
+  function addSession(studentId, forced){
+    const student = data.students.find(s=>s.id===studentId);
+    const d = forced ? forced.d : Number(document.getElementById('sDay').value);
+    const m = forced ? forced.m : Number(document.getElementById('sMonth').value);
+    const y = forced ? forced.y : Number(document.getElementById('sYear').value);
+    if(!y || y<2000 || y>2100){ toast('Please enter a valid year.'); return; }
+    if(d<1 || d>daysInMonth(y,m)){ toast(`${MONTHS[m-1]} ${y} does not have a day ${d}.`); return; }
+    const dup = student.sessions.some(s=>s.y===y && s.m===m && s.d===d);
+    if(dup){ toast('This date has already been added.'); return; }
+    student.sessions.push({ id:uid(), y, m, d });
+    save();
+
+    const cycles = buildCycles(student);
+    const lastCycle = cycles[cycles.length-1];
+    if(lastCycle && lastCycle.complete && lastCycle.sessions.some(s=>s.y===y && s.m===m && s.d===d)){
+      toast(`\uD83C\uDF89 ${lastCycle.length} days of teaching completed for Cycle ${lastCycle.number}! You can now request the fee from the guardian.`);
+    }else{
+      toast(`${fmtDate(y,m,d)} (${weekdayName(y,m,d)}) added.`);
+    }
+    renderAll();
+  }
+
+  function deleteStudent(id){
+    const student = data.students.find(s=>s.id===id);
+    if(!student) return;
+    if(!confirm(`This will delete all records for ${student.name}. This cannot be undone. Continue?`)) return;
+    data.students = data.students.filter(s=>s.id!==id);
+    if(activeStudentId===id) activeStudentId = data.students[0] ? data.students[0].id : null;
+    if(data.primaryStudentId===id) data.primaryStudentId = null;
+    save(); renderAll();
+    toast('Student removed.');
+  }
+
+  // Primary tuition = the one that opens first when the app loads. Only an
+  // active (ongoing) tuition can be primary — ending a tuition that was
+  // primary automatically clears it, since it's no longer the one you're at.
+  function setPrimaryStudent(id){
+    data.primaryStudentId = id;
+    save(); renderAll();
+    toast(id ? 'Set as your primary tuition.' : 'Primary tuition unset.');
+  }
+  function toggleTuitionActive(id){
+    const student = data.students.find(s=>s.id===id);
+    if(!student) return;
+    const wasActive = student.tuitionActive!==false;
+    student.tuitionActive = !wasActive;
+    if(!student.tuitionActive && data.primaryStudentId===id){
+      data.primaryStudentId = null;
+      toast(`${student.name}'s tuition marked as ended. Pick a new primary tuition when you're ready.`);
+    }else{
+      toast(student.tuitionActive ? `${student.name}'s tuition reactivated.` : `${student.name}'s tuition marked as ended.`);
+    }
+    save(); renderAll();
+  }
+
+  // ---- student modal ----
+  function openStudentModal(student){
+    editingStudentId = student ? student.id : null;
+    document.getElementById('studentModalTitle').textContent = student ? 'Edit Student' : 'Add New Student';
+    document.getElementById('fName').value = student ? student.name : '';
+    document.getElementById('fClass').value = student ? student.studentClass||'' : '';
+    document.getElementById('fLocation').value = student ? student.location||'' : '';
+    document.getElementById('fSubjects').value = student ? (student.subjects||[]).join(', ') : '';
+    document.getElementById('fDaysPerWeek').value = student ? student.daysPerWeek||'' : '';
+    document.getElementById('fHours').value = student ? student.hoursPerSession||'' : '';
+    document.getElementById('fFee').value = student ? student.fee||'' : '';
+    document.getElementById('fTransportCost').value = student ? (student.transportPerDay ? +Number(student.transportPerDay).toFixed(4) : '') : '';
+    document.getElementById('fOtherCosts').value = student ? student.otherCosts||'' : '';
+    document.getElementById('fFirstCost').value = student ? student.firstCycleCost||'' : '';
+    document.getElementById('fCycleLength').value = student ? student.cycleLength||12 : 12;
+    document.getElementById('fGuardianPhone').value = student ? student.guardianPhone||'' : '';
+    document.getElementById('fGuardianName').value = student ? student.guardianName||'' : '';
+    document.getElementById('fGuardianDetails').value = student ? student.guardianDetails||'' : '';
+    updateNetPreview();
+    document.getElementById('studentModalOverlay').classList.remove('hidden');
+    document.getElementById('fName').focus();
+  }
+  function closeStudentModal(){
+    document.getElementById('studentModalOverlay').classList.add('hidden');
+    editingStudentId = null;
+  }
+  function saveStudentFromModal(){
+    const name = document.getElementById('fName').value.trim();
+    if(!name){ toast("Student's name is required."); return; }
+    const studentClass = document.getElementById('fClass').value.trim();
+    const location = document.getElementById('fLocation').value.trim();
+    const subjects = document.getElementById('fSubjects').value.split(',').map(s=>s.trim()).filter(Boolean);
+    const daysPerWeek = Number(document.getElementById('fDaysPerWeek').value)||0;
+    const hoursPerSession = Number(document.getElementById('fHours').value)||0;
+    const fee = Number(document.getElementById('fFee').value)||0;
+    const transportPerDay = Number(document.getElementById('fTransportCost').value)||0;
+    const otherCosts = Number(document.getElementById('fOtherCosts').value)||0;
+    const firstCycleCost = Number(document.getElementById('fFirstCost').value)||0;
+    let cycleLength = Number(document.getElementById('fCycleLength').value)||12;
+    const guardianPhone = document.getElementById('fGuardianPhone').value.trim();
+    const guardianName = document.getElementById('fGuardianName').value.trim();
+    const guardianDetails = document.getElementById('fGuardianDetails').value.trim();
+
+    if(editingStudentId){
+      const student = data.students.find(s=>s.id===editingStudentId);
+      // Changing the default only affects cycles that don't already have their
+      // own length set — freeze every existing cycle's current length first so
+      // past months (and their fee-collected marks) never shift.
+      if(cycleLength !== student.cycleLength && student.sessions.length>0){
+        lockInExistingCycleLengths(student);
+      }
+      Object.assign(student, {name, studentClass, location, subjects, daysPerWeek, hoursPerSession, fee, transportPerDay, otherCosts, firstCycleCost, cycleLength, guardianPhone, guardianName, guardianDetails});
+      toast('Student details updated.');
+    }else{
+      const student = {
+        id:uid(), name, studentClass, location, subjects, daysPerWeek, hoursPerSession, fee, transportPerDay, otherCosts, firstCycleCost, cycleLength,
+        guardianPhone, guardianName, guardianDetails, sessions:[], collectedCycles:[], cycleLengths:[], tuitionActive:true
+      };
+      data.students.push(student);
+      activeStudentId = student.id;
+      toast('New student added. Tracking has started.');
+    }
+    save();
+    closeStudentModal();
+    renderAll();
+  }
+
+  // ---- backup / restore ----
+  function exportBackup(){
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const t = todayParts();
+    a.href = url;
+    a.download = `tuition-register-backup-${t.y}-${pad2(t.m)}-${pad2(t.d)}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('Backup exported.');
+  }
+  function importBackup(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const parsed = JSON.parse(reader.result);
+        if(!parsed || !Array.isArray(parsed.students)) throw new Error('bad shape');
+        if(!confirm('Importing will replace all current data. Continue?')) return;
+        parsed.payments = parsed.payments || [];
+        parsed.students.forEach(normalizeStudent);
+        data = parsed;
+        activeStudentId = data.students[0] ? data.students[0].id : null;
+        save(); renderAll();
+        toast('Backup imported.');
+      }catch(e){
+        toast("Couldn't read that file — is it a valid backup?");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function renderAll(){
+    renderStats(); renderNetIncome(); renderLifetime(); renderPayments(); renderStudentList(); renderMain();
+    if(activeStudentId) ssSet(STUDENT_KEY, activeStudentId); else ssRemove(STUDENT_KEY);
+  }
+
+  document.getElementById('btnAddStudent').addEventListener('click', ()=>openStudentModal(null));
+  document.getElementById('btnCancelStudent').addEventListener('click', closeStudentModal);
+  document.getElementById('btnSaveStudent').addEventListener('click', saveStudentFromModal);
+  document.getElementById('studentModalOverlay').addEventListener('click', (e)=>{
+    if(e.target.id==='studentModalOverlay') closeStudentModal();
+  });
+  document.getElementById('searchInput').addEventListener('input', renderStudentList);
+  document.getElementById('btnExport').addEventListener('click', exportBackup);
+  document.getElementById('btnImport').addEventListener('click', ()=>document.getElementById('fileImport').click());
+  document.getElementById('pRecMonth').addEventListener('change', ()=>refreshDayOptions(null, {day:'pDay', month:'pRecMonth', year:'pRecYear'}));
+  document.getElementById('pRecYear').addEventListener('change', ()=>refreshDayOptions(null, {day:'pDay', month:'pRecMonth', year:'pRecYear'}));
+  document.getElementById('btnAddPayment').addEventListener('click', addPayment);
+  document.getElementById('pStudent').addEventListener('change', ()=>{ pStudentTouched = true; updateFeeChip(); });
+  document.getElementById('btnUseFee').addEventListener('click', ()=>{
+    const s = data.students.find(x=>x.id===document.getElementById('pStudent').value);
+    if(s && Number(s.fee)>0){ document.getElementById('pAmount').value = Number(s.fee); document.getElementById('pAmount').focus(); }
+  });
+  document.getElementById('btnRecToday').addEventListener('click', ()=>{
+    const t = todayParts();
+    document.getElementById('pRecYear').value = t.y;
+    document.getElementById('pRecMonth').value = t.m;
+    refreshDayOptions(t.d, {day:'pDay', month:'pRecMonth', year:'pRecYear'});
+  });
+  // Student modal: live net preview + Enter to save
+  function updateNetPreview(){
+    const f = Number(document.getElementById('fFee').value)||0;
+    const perD = Number(document.getElementById('fTransportCost').value)||0;
+    const len = Number(document.getElementById('fCycleLength').value)||12;
+    const o = Number(document.getElementById('fOtherCosts').value)||0;
+    const one = Number(document.getElementById('fFirstCost').value)||0;
+    const transport = perD*len;
+    const later = f - transport - o;
+    const first = later - one;
+    const box = document.getElementById('netPreview');
+    box.className = 'net-preview' + ((first<0 || later<0) ? ' negative' : '');
+    box.innerHTML = (one>0
+      ? `<span>Net: Cycle 1 &nbsp;·&nbsp; later cycles</span><b>\u09F3${money(first)} &nbsp;·&nbsp; \u09F3${money(later)}</b>`
+      : `<span>Net per full cycle</span><b>\u09F3${money(later)}</b>`)
+      + `<small class="np-sub">Transport \u09F3${money(perD)} × ${len} days = \u09F3${money(transport)} for a full cycle</small>`;
+  }
+  ['fFee','fTransportCost','fOtherCosts','fFirstCost','fCycleLength'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.addEventListener('input', updateNetPreview);
+    el.addEventListener('change', updateNetPreview);
+  });
+  document.getElementById('btnFill30').addEventListener('click', ()=>{
+    const f = Number(document.getElementById('fFee').value)||0;
+    if(f<=0){ toast('Enter the fee first, then fill 30%.'); return; }
+    document.getElementById('fFirstCost').value = Math.round(f*0.3);
+    updateNetPreview();
+  });
+  document.getElementById('studentModalOverlay').addEventListener('keydown', (e)=>{
+    if(e.key==='Enter' && e.target.tagName==='INPUT'){ e.preventDefault(); saveStudentFromModal(); }
+  });
+
+  document.getElementById('tabPrimary').addEventListener('click', ()=>showPage('primary'));
+  document.getElementById('tabSecondary').addEventListener('click', ()=>showPage('secondary'));
+  function showPage(page){
+    if(page!=='secondary') page = 'primary';
+    ssSet(PAGE_KEY, page);
+    document.getElementById('pagePrimary').classList.toggle('hidden', page!=='primary');
+    document.getElementById('pageSecondary').classList.toggle('hidden', page!=='secondary');
+    document.getElementById('tabPrimary').classList.toggle('active', page==='primary');
+    document.getElementById('tabSecondary').classList.toggle('active', page==='secondary');
+  }
+  document.getElementById('fileImport').addEventListener('change', (e)=>{
+    if(e.target.files[0]) importBackup(e.target.files[0]);
+    e.target.value = '';
+  });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeStudentModal(); closeDetail(); } });
+
+  // ---- lock screen wiring ----
+  document.getElementById('btnLockSetupSave').addEventListener('click', ()=>{
+    const p1 = document.getElementById('lpNew1').value.trim();
+    const p2 = document.getElementById('lpNew2').value.trim();
+    const q = document.getElementById('lpQuestion').value.trim();
+    const a = document.getElementById('lpAnswer').value.trim();
+    if(!/^\d{4,6}$/.test(p1)){ setLockError('lockSetupError','PIN must be 4–6 digits.'); return; }
+    if(p1!==p2){ setLockError('lockSetupError','PINs do not match.'); return; }
+    if(!q || !a){ setLockError('lockSetupError','Please add a security question and answer, in case you forget your PIN.'); return; }
+    saveLockData({ pinHash: hashPin(p1), question: q, answerHash: hashPin(a.toLowerCase()) });
+    setLockError('lockSetupError','');
+    document.getElementById('lpConfirm').value = '';
+    setLockError('lockConfirmError','');
+    showLockPanel('lockConfirmNew');
+  });
+
+  document.getElementById('btnLockConfirm').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const val = document.getElementById('lpConfirm').value.trim();
+    if(!lock){ setLockError('lockConfirmError','Something went wrong — please set your PIN again.'); showLockPanel('lockSetup'); return; }
+    if(hashPin(val)===lock.pinHash){
+      setLockError('lockConfirmError','');
+      document.getElementById('lpConfirm').value = '';
+      unlockApp();
+    } else {
+      setLockError('lockConfirmError','That PIN does not match. Try again.');
+    }
+  });
+
+  document.getElementById('btnLockLogin').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const val = document.getElementById('lpLogin').value.trim();
+    if(lock && hashPin(val)===lock.pinHash){
+      setLockError('lockLoginError','');
+      document.getElementById('lpLogin').value = '';
+      unlockApp();
+    } else {
+      setLockError('lockLoginError','Incorrect PIN. Try again.');
+    }
+  });
+
+  document.getElementById('btnForgotPin').addEventListener('click', ()=>{
+    const lock = loadLock();
+    if(!lock) return;
+    document.getElementById('lockQuestionDisplay').textContent = lock.question;
+    document.getElementById('lpForgotAnswer').value = '';
+    setLockError('lockForgotError','');
+    showLockPanel('lockForgotVerify');
+  });
+  document.getElementById('btnForgotCancel').addEventListener('click', ()=>{ showLockPanel('lockLogin'); });
+
+  document.getElementById('btnForgotVerify').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const ans = document.getElementById('lpForgotAnswer').value.trim().toLowerCase();
+    if(lock && hashPin(ans)===lock.answerHash){
+      setLockError('lockForgotError','');
+      document.getElementById('lpReset1').value = '';
+      document.getElementById('lpReset2').value = '';
+      document.getElementById('lpResetQuestion').value = '';
+      document.getElementById('lpResetAnswer').value = '';
+      setLockError('lockResetError','');
+      showLockPanel('lockForgotSetNew');
+    } else {
+      setLockError('lockForgotError','That answer does not match.');
+    }
+  });
+
+  document.getElementById('btnLockResetSave').addEventListener('click', ()=>{
+    const p1 = document.getElementById('lpReset1').value.trim();
+    const p2 = document.getElementById('lpReset2').value.trim();
+    const q = document.getElementById('lpResetQuestion').value.trim();
+    const a = document.getElementById('lpResetAnswer').value.trim();
+    if(!/^\d{4,6}$/.test(p1)){ setLockError('lockResetError','PIN must be 4–6 digits.'); return; }
+    if(p1!==p2){ setLockError('lockResetError','PINs do not match.'); return; }
+    if(!q || !a){ setLockError('lockResetError','Please add a security question and answer.'); return; }
+    saveLockData({ pinHash: hashPin(p1), question: q, answerHash: hashPin(a.toLowerCase()) });
+    setLockError('lockResetError','');
+    document.getElementById('lpConfirm').value = '';
+    setLockError('lockConfirmError','');
+    showLockPanel('lockConfirmNew');
+  });
+
+  document.getElementById('btnLockNow').addEventListener('click', ()=>{ lockApp(); });
+
+  document.getElementById('btnChangePin').addEventListener('click', ()=>{
+    document.getElementById('lpChangeCurrent').value = '';
+    setLockError('lockChangeVerifyError','');
+    document.getElementById('lockScreen').classList.remove('hidden');
+    document.getElementById('appRoot').classList.add('app-hidden');
+    showLockPanel('lockChangeVerify');
+  });
+  document.getElementById('btnChangeCancel').addEventListener('click', ()=>{ unlockApp(); });
+  document.getElementById('btnChangeVerify').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const val = document.getElementById('lpChangeCurrent').value.trim();
+    if(lock && hashPin(val)===lock.pinHash){
+      setLockError('lockChangeVerifyError','');
+      document.getElementById('lpChangeNew1').value = '';
+      document.getElementById('lpChangeNew2').value = '';
+      setLockError('lockChangeNewError','');
+      showLockPanel('lockChangeNew');
+    } else {
+      setLockError('lockChangeVerifyError','Incorrect PIN.');
+    }
+  });
+  document.getElementById('btnChangeSave').addEventListener('click', ()=>{
+    const lock = loadLock();
+    const p1 = document.getElementById('lpChangeNew1').value.trim();
+    const p2 = document.getElementById('lpChangeNew2').value.trim();
+    if(!/^\d{4,6}$/.test(p1)){ setLockError('lockChangeNewError','PIN must be 4–6 digits.'); return; }
+    if(p1!==p2){ setLockError('lockChangeNewError','PINs do not match.'); return; }
+    saveLockData(Object.assign({}, lock, { pinHash: hashPin(p1) }));
+    setLockError('lockChangeNewError','');
+    unlockApp();
+    toast('PIN updated.');
+  });
+  // Auto-unlock: the moment the typed PIN matches, open the app (no button, no Enter needed).
+  function autoPin(inputId, errId){
+    const inp = document.getElementById(inputId);
+    inp.addEventListener('input', ()=>{
+      const lock = loadLock();
+      const val = inp.value.trim();
+      setLockError(errId, '');
+      if(!lock || val.length<4) return;
+      if(hashPin(val)===lock.pinHash){ inp.value = ''; unlockApp(); }
+      else if(val.length>=6){ inp.value = ''; setLockError(errId, 'Incorrect PIN. Try again.'); }
+    });
+  }
+  autoPin('lpLogin', 'lockLoginError');
+  autoPin('lpConfirm', 'lockConfirmError');
+  document.querySelectorAll('.lock-panel input').forEach(inp=>{
+    inp.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter'){
+        const btn = inp.closest('.lock-panel').querySelector('.btn-primary');
+        if(btn) btn.click();
+      }
+    });
+  });
+
+  renderAll();
+  showPage(ssGet(PAGE_KEY)==='secondary' ? 'secondary' : 'primary');
+  initLock();
+})();
+</script>
+</body>
+</html>
